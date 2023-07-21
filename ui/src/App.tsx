@@ -29,8 +29,10 @@ const nodes = [
     },
     {
       id: '2',
-      data: { label: 'World' },
+      type: "output",
+      data: { label: 'World', type:"chain" },
       position: { x: 100, y: 100 },
+      
       ...nodeDefaults
     },
     {
@@ -43,7 +45,7 @@ const nodes = [
 
 const edges = [
     {
-        id: 'e1-2',
+        id: '1-2',
         source: '1',
         target: '2',
     },
@@ -55,12 +57,13 @@ const App: FunctionComponent = () => {
         <ChakraProvider>
             <Box display="flex">
                 <MyChatbot/>
-                <p/>
+                
+                <GraphFlow initialEdges={edges} initialNodes={nodes} />
+            </Box>
+            <p/>
                 <Wallet/>
                 <p/>
                 <SafeWidget/>
-                <GraphFlow initialEdges={edges} initialNodes={nodes} />
-            </Box>
         </ChakraProvider>
         </>
     );

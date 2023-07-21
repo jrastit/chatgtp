@@ -8,9 +8,12 @@ import ReactFlow, {
     useStoreApi,
     Controls,
     ReactFlowProvider,
+    BackgroundVariant,
 } from 'reactflow';
 
 import 'reactflow/dist/style.css';
+
+import "./style.css"
 
 
 interface GraphProps {
@@ -66,30 +69,48 @@ function Graph({initialNodes, initialEdges}: GraphProps) {
         return null;
         }
 
-        const closeNodeIsSource = closestNode?.node?.positionAbsolute?.x < node?.positionAbsolute?.x;
+        //const closeNodeIsSource = closestNode?.node?.positionAbsolute?.x < node?.positionAbsolute?.x;
 
         return {
         id: `${node.id}-${closestNode.node.id}`,
-        source: closeNodeIsSource ? closestNode.node.id : node.id,
-        target: closeNodeIsSource ? node.id : closestNode.node.id,
+        // source: closeNodeIsSource ? closestNode.node.id : node.id,
+        // target: closeNodeIsSource ? node.id : closestNode.node.id,
+        source: closestNode.node.id,
+        target: node.id,
         };
     }, []);
 
-
-  const onNodeDrag = useCallback(
+    const onNodeDrag = useCallback(
     (_:any, node:any) => {
         const closeEdge:any = getClosestEdge(node);
 
+        const dropNode:any = nodes.find(node => closeEdge ? node.id === closeEdge.id.split('-')[0]: null)
         setEdges((es) => {
             const nextEdges = es.filter((e) => e.className !== 'temp');
+            
 
             if (
             closeEdge &&
             !nextEdges.find((ne) => ne.source === closeEdge.source && ne.target === closeEdge.target)
             ) {
+                if (dropNode && dropNode.data.type =="chain") {
+                    console.log(dropNode)
+                    if (nextEdges.find((ne)=>  ne.target!==dropNode.id)){
+                        nextEdges.filter((ne)=>  ne.target!==dropNode.id )
+                    } else {
+                        while(nextEdges.length > 0) {
+                            nextEdges.pop();
+                        }
+                    }
+                    
+                    console.log(nextEdges.find((ne)=>  ne.target===dropNode.id))
+                }
+        
             closeEdge.className = 'temp';
             nextEdges.push(closeEdge);
             }
+
+            
 
             return nextEdges;
         });
@@ -125,7 +146,7 @@ function Graph({initialNodes, initialEdges}: GraphProps) {
             onNodeDragStop={onNodeDragStop}
             onConnect={onConnect}
             >
-            <Background />
+            <Background variant={BackgroundVariant.Dots} gap={50}/>
             <Controls />
             </ReactFlow>
         </Box>
