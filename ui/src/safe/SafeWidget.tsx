@@ -16,13 +16,11 @@ const SafeWidget= () => {
             <Button onClick={() => openSafe()}>Login</Button>
             {authKitSignData && authKitSignData.safes && authKitSignData.safes.map((safe: any) => {
                 return (
-                    <div key={safe.safeAddress}>
-                        <p>Safe Address: {safe.safeAddress}</p>
-                        <p>Safe Name: {safe.safeName}</p>
-                        <p>Safe Owner: {safe.safeOwner}</p>
+                    <div key={safe}>
+                        <p>Safe Address: {safe}</p>
                     </div>
                 )
-            }
+            })}
         </div>
     );
 };
