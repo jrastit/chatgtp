@@ -8,11 +8,8 @@ const hookWebpackConfig = (configBuilder) => (webpackEnv) => {
     // generate webpack config from react-script
     const config = configBuilder(webpackEnv);
 
-    config.resolve.fallback = {
-        process: false,
-    };
-
     config.plugins.push(new ProvidePlugin({
+        process: 'process/browser.js',
         Buffer: ['buffer', 'Buffer'],
     }));
 
