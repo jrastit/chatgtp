@@ -3,8 +3,19 @@ import {FunctionComponent, useState} from "react";
 
 const listTokensQuery = gql`
     query MyQuery($owner: Identity) {
-      TokenBalances(
+      EthereumBalances: TokenBalances(
         input: {filter: {owner: {_eq: $owner}}, blockchain: ethereum, limit: 200}
+      ) {
+        TokenBalance {
+          amount
+          formattedAmount
+          token {
+            name
+          }
+        }
+      }
+      PolygonBalances: TokenBalances(
+        input: {filter: {owner: {_eq: $owner}}, blockchain: polygon, limit: 200}
       ) {
         TokenBalance {
           amount
@@ -17,16 +28,20 @@ const listTokensQuery = gql`
     }
 `;
 
+interface BlockchainResultType {
+    TokenBalance: {
+        amount: string,
+        formattedAmount: number,
+        token: {
+            name: string,
+        },
+    }[],
+}
+
+
 interface TokenListResultType {
-    TokenBalances: {
-        TokenBalance: {
-            amount: string,
-            formattedAmount: number,
-            token: {
-                name: string,
-            },
-        }[],
-    }
+    EthereumBalances: BlockchainResultType,
+    PolygonBalances: BlockchainResultType,
 }
 
 const Wallet: FunctionComponent = () => {
@@ -43,16 +58,30 @@ const Wallet: FunctionComponent = () => {
         return `Error! ${error.message}`;
     } else if (data) {
         return (
-            <table>
-                <tbody>
-                {data.TokenBalances.TokenBalance.map((e) => (
-                    <tr>
-                        <td>{e.formattedAmount}</td>
-                        <td>{e.token.name}</td>
-                    </tr>
-                ))}
-                </tbody>
-            </table>
+            <>
+                <h1>Ethereum</h1>
+                <table>
+                    <tbody>
+                    {data.EthereumBalances.TokenBalance.map((e) => (
+                        <tr>
+                            <td>{e.formattedAmount}</td>
+                            <td>{e.token.name}</td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>
+                <h1>Polygon</h1>
+                <table>
+                    <tbody>
+                    {data.PolygonBalances.TokenBalance.map((e) => (
+                        <tr>
+                            <td>{e.formattedAmount}</td>
+                            <td>{e.token.name}</td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>
+            </>
         );
     } else {
         return "No data!";
