@@ -6,11 +6,13 @@ import SafeWidget from './safe/SafeWidget';
 const App: FunctionComponent = () => {
     return (
         <>
+            <SafeWidget/>
+            <p/>
             <MyChatbot/>
             <p/>
             <Wallet/>
             <p/>
-            <SafeWidget/>
+            
 
         </>
     );
