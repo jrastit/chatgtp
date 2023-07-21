@@ -45,7 +45,7 @@ interface TokenListResultType {
 }
 
 const Wallet: FunctionComponent = () => {
-    const [owner /*, setOwner*/] = useState('vitalik.eth')
+    const [owner /*, setOwner*/] = useState('jrastit.eth')
     const {loading, error, data} = useQuery<TokenListResultType>(listTokensQuery, {
         variables: {
             owner,
