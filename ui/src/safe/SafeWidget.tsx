@@ -11,9 +11,20 @@ const SafeWidget= () => {
         setAuthKitSignData(authKitSignData)
     }
 
+    const closeSafe = async () => {
+        await web3AuthModalPack.signOut()
+        setAuthKitSignData(null)
+    }
+
     return (
         <div>
-            <Button onClick={() => openSafe()}>Login</Button>
+            {!authKitSignData &&
+                <Button onClick={() => openSafe()}>Login</Button>
+            }
+            
+            {!!authKitSignData &&
+                <Button onClick={() => closeSafe()}>Logout</Button>
+            }
             {authKitSignData && authKitSignData.safes && authKitSignData.safes.map((safe: any) => {
                 return (
                     <div key={safe}>
