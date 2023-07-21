@@ -1,9 +1,14 @@
 import {FunctionComponent} from "react";
-import MyChatbot from './chatbot/MyChatbot'
+import Wallet from "./wallet/Wallet";
+import MyChatbot from "./chatbot/MyChatbot";
 
 const App: FunctionComponent = () => {
     return (
-        <MyChatbot/>
+        <>
+            <MyChatbot/>
+            <p/>
+            <Wallet/>
+        </>
     );
 }
 
