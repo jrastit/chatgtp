@@ -1,0 +1,10 @@
+{
+  "name": "test",
+  "type": "module",
+  "private": true,
+  "workspaces": [
+    "back",
+    "ui"
+  ],
+  "packageManager": "yarn@3.6.1"
+}
