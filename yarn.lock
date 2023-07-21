@@ -7311,6 +7311,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"callsite@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "callsite@npm:1.0.0"
+  checksum: 569686d622a288a4f0a827466c2f967b6d7a98f2ee1e6ada9dcf5a6802267a5e2a995d40f07113b5f95c7b2b2d5cbff4fdde590195f2a8bed24b829d048688f8
+  languageName: node
+  linkType: hard
+
 "callsites@npm:^3.0.0":
   version: 3.1.0
   resolution: "callsites@npm:3.1.0"
@@ -11268,6 +11275,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"intercept-require@npm:1.1.0":
+  version: 1.1.0
+  resolution: "intercept-require@npm:1.1.0"
+  dependencies:
+    callsite: ^1.0.0
+    object-assign: ^2.0.0
+  checksum: 4c8ef799db2bd6e51953d83e5b467bf57c479d601fb894152f67e7d7d69728fa23fa1f6b94ea83451b1ec71072f96c8312f2946691aacf8e9b783ba82317a110
+  languageName: node
+  linkType: hard
+
 "internal-slot@npm:^1.0.3, internal-slot@npm:^1.0.5":
   version: 1.0.5
   resolution: "internal-slot@npm:1.0.5"
@@ -13664,6 +13681,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"object-assign@npm:^2.0.0":
+  version: 2.1.1
+  resolution: "object-assign@npm:2.1.1"
+  checksum: d37a7d7173408e07ee225116437592d92b584b2a5f38cafe608400b43efd9b78878dbd545b524aff5b4118d88e39466b9038b2d3de8885e212adad497d656c46
+  languageName: node
+  linkType: hard
+
 "object-assign@npm:^4, object-assign@npm:^4.0.1, object-assign@npm:^4.1.0, object-assign@npm:^4.1.1":
   version: 4.1.1
   resolution: "object-assign@npm:4.1.1"
@@ -15108,7 +15132,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"process@npm:^0.11.10":
+"process@npm:0.11.10, process@npm:^0.11.10":
   version: 0.11.10
   resolution: "process@npm:0.11.10"
   checksum: bfcce49814f7d172a6e6a14d5fa3ac92cc3d0c3b9feb1279774708a719e19acd673995226351a082a9ae99978254e320ccda4240ddc474ba31a76c79491ca7c3
@@ -17790,6 +17814,8 @@ __metadata:
     graphql: 16.7.1
     http: "npm:stream-http@3.2.0"
     https: "npm:https-browserify@1.0.0"
+    intercept-require: 1.1.0
+    process: 0.11.10
     react: 18.2.0
     react-bootstrap: 2.8.0
     react-chatbot-kit: 2.1.2
@@ -17798,6 +17824,7 @@ __metadata:
     stream: "npm:stream-browserify@3.0.0"
     typescript: 5.1.6
     url: 0.11.1
+    webpack: 5.88.2
     zlib: "npm:browserify-zlib@0.2.0"
   languageName: unknown
   linkType: soft
@@ -18598,7 +18625,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack@npm:^5.64.4":
+"webpack@npm:5.88.2, webpack@npm:^5.64.4":
   version: 5.88.2
   resolution: "webpack@npm:5.88.2"
   dependencies:

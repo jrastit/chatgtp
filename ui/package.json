@@ -6,8 +6,8 @@
   "proxy": "http://127.0.0.1:8080/",
   "scripts": {
     "checkts": "tsc --noEmit",
-    "build": "react-scripts build",
-    "start": "react-scripts start"
+    "build": "react-scripts scripts/react-scripts-custom.js build",
+    "start": "react-scripts scripts/react-scripts-custom.js start"
   },
   "browserslist": [
     "last 2 chrome version",
@@ -27,6 +27,7 @@
     "graphql": "16.7.1",
     "http": "npm:stream-http@3.2.0",
     "https": "npm:https-browserify@1.0.0",
+    "process": "0.11.10",
     "react": "18.2.0",
     "react-bootstrap": "2.8.0",
     "react-chatbot-kit": "2.1.2",
@@ -38,7 +39,9 @@
   "devDependencies": {
     "@types/react": "18.2.15",
     "@types/react-dom": "18.2.7",
+    "intercept-require": "1.1.0",
     "react-scripts": "5.0.1",
-    "typescript": "5.1.6"
+    "typescript": "5.1.6",
+    "webpack": "5.88.2"
   }
 }
