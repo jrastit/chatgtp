@@ -3,9 +3,6 @@ import {FunctionComponent, useState} from "react";
 import GraphFlow from '../GraphFlow/GraphFlow';
 import nodeDefaults from '../GraphFlow/NodeTypeDefault';
 
-
-
-
 const listTokensQuery = gql`
     query MyQuery($owner: Identity) {
       EthereumBalances: TokenBalances(

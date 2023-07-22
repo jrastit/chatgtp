@@ -1,27 +1,32 @@
-import { Box } from '@chakra-ui/react';
-import { useCallback, useEffect } from 'react';
+import { Box, useDisclosure } from '@chakra-ui/react';
+import { useCallback, useEffect, useState } from 'react';
 import ReactFlow, {
     addEdge,
     useNodesState,
     useEdgesState,
-    Background,
     useStoreApi,
     Controls,
     ReactFlowProvider,
-    BackgroundVariant,
 } from 'reactflow';
 
 import 'reactflow/dist/style.css';
 
 import "./style.css";
 import NodeLoad from './NodeLoad';
-import { Spinner } from 'react-bootstrap';
+import Pop from './Pop';
 
 interface Edges {
     id: string
     target: string
     source: string
     className: string
+}
+
+interface Node {
+    id:string
+    type:string
+    data: Map<string,any>
+
 }
 
 interface GraphProps {
@@ -37,7 +42,6 @@ const reactFlowStyle = {
 
 const nodeTypes = { nodeLoader: NodeLoad };
 
-
 const MIN_DISTANCE = 200;
 
 
@@ -45,6 +49,8 @@ function Graph({initialNodes, initialEdges}: GraphProps) {
     
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges ? initialEdges : []);
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const [nodeSelect, setNodeSelect] = useState<Node>();
     const store = useStoreApi();
 
     const onConnect = useCallback((params:any) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
@@ -120,8 +126,38 @@ function Graph({initialNodes, initialEdges}: GraphProps) {
 
   const onNodeDragStop = useCallback(
     (_:any, node:any) => {
-      const closeEdge = getClosestEdge(node);
+      
+        setNodeSelect(node);
+        console.log(nodeSelect)
+        console.log("edges",edges)
+        if (edges.find(e=> e.className==="temp")) {
+            onOpen();
+        }
+        onOpen();
+        
+      
+      
+    },
+    [getClosestEdge]
+  );
 
+  useEffect(()=> {
+    setNodes((nds) =>
+        nds.map((node) => {
+            if (edges.find((e)=> e.target===node.id && e.className=="new")) {
+                node.type="nodeLoader"
+                
+            }
+            return node;
+        })
+        );
+    
+  }, [edges]);
+
+    const updateNode = () =>  {
+        const node = nodeSelect;
+        console.log(nodeSelect);
+        const closeEdge = getClosestEdge(node);
         setEdges((es) => {
             console.log(es)
             var nextEdges = es.filter((e) => e.className !== 'temp');
@@ -153,25 +189,7 @@ function Graph({initialNodes, initialEdges}: GraphProps) {
 
         return nextEdges;
       });
-      
-      
-    },
-    [getClosestEdge]
-  );
-
-  useEffect(()=> {
-    setNodes((nds) =>
-      nds.map((node) => {
-        if (edges.find((e)=> e.target===node.id && e.className=="new")) {
-            node.type="nodeLoader"
-            console.log(node)
-        }
-
-        return node;
-      })
-    );
-    
-  }, [edges]);
+    }
     
    
     return (
@@ -186,12 +204,17 @@ function Graph({initialNodes, initialEdges}: GraphProps) {
             onNodeDragStop={onNodeDragStop}
             onConnect={onConnect}
             nodeTypes={nodeTypes}
+        
             fitView
-            snapToGrid
             >
-            <Background variant={BackgroundVariant.Dots} gap={50}/>
             <Controls />
             </ReactFlow>
+            <Pop validateLabel="Confirmer" closeLabel="Annuler" close={onClose} validate={() => { updateNode(); onClose() }} isVisible={isOpen} title="Transaction">
+                <Box>
+                    Etes vous sur de vouloir transférer cet item ?
+                </Box>
+
+            </Pop>
         </Box>
         );
     }
