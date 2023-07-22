@@ -9,7 +9,7 @@ import { IPaymaster, BiconomyPaymaster,} from '@biconomy/paymaster'
 
 
 interface Props {
-  smartAccount: BiconomySmartAccount
+  smartAccount: any
   provider: any
 }
 
@@ -24,12 +24,12 @@ const TotalCountDisplay: React.FC<{ count: number }> = ({ count }) => {
   };
 
 
-const Counter: React.FC<Props> = ({ smartAccount, provider }) => {
+const Gold: React.FC<Props> = ({ smartAccount, provider }) => {
   const [count, setCount] = useState<number>(0);
-  const [counterContract, setCounterContract] = useState<any>(null);
+  const [goldContract, setGoldContract] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const counterAddress = '0x813CE0d67d7a7534d26300E547C4B66a9B855A45';
+  const goldAddress = '0x813CE0d67d7a7534d26300E547C4B66a9B855A45';
 
   useEffect(() => {
     setIsLoading(true);
@@ -38,8 +38,8 @@ const Counter: React.FC<Props> = ({ smartAccount, provider }) => {
   }, []);
 
   const getCount = async (isUpdating: boolean) => {
-    const contract = new ethers.Contract(counterAddress, abi.output.abi, provider);
-    setCounterContract(contract);
+    const contract = new ethers.Contract(goldAddress, abi.output.abi, provider);
+    setGoldContract(contract);
     const currentCount = await contract.balanceOf(smartAccount.address);
     setCount(currentCount.toNumber());
     if (isUpdating) {
@@ -58,7 +58,7 @@ const Counter: React.FC<Props> = ({ smartAccount, provider }) => {
 
   const self_mint = async () => {
     try {
-      toast.info('Processing count on the blockchain!', {
+      toast.info('Processing mint on the blockchain!', {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -69,11 +69,11 @@ const Counter: React.FC<Props> = ({ smartAccount, provider }) => {
         theme: "dark",
       });
 
-      const contract = new ethers.Contract(counterAddress, abi.output.abi, provider);
+      const contract = new ethers.Contract(goldAddress, abi.output.abi, provider);
       const data = contract.interface.encodeFunctionData("self_mint", [1]);
 
       const tx1 = {
-        to: counterAddress,
+        to: goldAddress,
         data: data,
       };
 
@@ -145,4 +145,4 @@ const Counter: React.FC<Props> = ({ smartAccount, provider }) => {
   );
 };
 
-export default Counter;
+export default Gold;

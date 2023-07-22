@@ -1,4 +1,4 @@
-import {FunctionComponent} from "react";
+import {FunctionComponent, useState} from "react";
 import Wallet from "./wallet/Wallet";
 import MyChatbot from "./chatbot/MyChatbot";
 import {ChatIcon} from '@chakra-ui/icons'
@@ -6,6 +6,7 @@ import SafeWidget from './safe/SafeWidget';
 import Biconomy from "./biconomy/Biconomy";
 
 import {  Box, Button, ChakraProvider, Stack, useDisclosure } from "@chakra-ui/react";
+import { IBlockchain, IContext } from "./type/blockchain";
 
 // const nodeDefaults = {
 //     // sourceposition: Position.Right,  
@@ -53,6 +54,12 @@ import {  Box, Button, ChakraProvider, Stack, useDisclosure } from "@chakra-ui/r
 // ]
 
 const App: FunctionComponent = () => {
+    const [context, setContext] = useState<IContext>(new IContext([
+        new IBlockchain(1, "Ethereum", []),
+        new IBlockchain(5, "Goerli", [], true),
+        new IBlockchain(137, "Polygon", []),
+    ]))
+
     const { isOpen, onOpen, onClose } = useDisclosure();
     return (
         <>

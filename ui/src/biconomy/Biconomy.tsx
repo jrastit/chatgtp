@@ -6,26 +6,35 @@ import { ethers } from 'ethers'
 import { IBundler, Bundler } from '@biconomy/bundler'
 import { BiconomySmartAccount,BiconomySmartAccountConfig, DEFAULT_ENTRYPOINT_ADDRESS } from "@biconomy/account"
 import { IPaymaster, BiconomyPaymaster,} from '@biconomy/paymaster'
-import Counter from './Components/Counter';
-import styles from '@/styles/Home.module.css'
+import Gold from './Components/Gold';
+import { IContext } from '../type/blockchain';
 
 
-const bundler: IBundler = new Bundler({
-  bundlerUrl: 'https://bundler.biconomy.io/api/v2/5/abc', // you can get this value from biconomy dashboard.     
-  chainId: ChainId.GOERLI,
-  entryPointAddress: DEFAULT_ENTRYPOINT_ADDRESS,
-})
 
-const paymaster: IPaymaster = new BiconomyPaymaster({
-  paymasterUrl: 'https://paymaster.biconomy.io/api/v1/5/vVbbCsVEp.14ff71ef-c84f-4684-ae2e-2d5a8adf5877' 
-})
 
-export default function Biconomy() {
+interface Props {
+  context: IContext
+  chainId: number
+  setContext: (context: IContext) => void
+}
+
+const Biconomy: React.FC<Props> = (
+  {context, chainId, setContext}) => {
   const [smartAccount, setSmartAccount] = useState<any>(null)
   const [interval, enableInterval] = useState(false)
   const sdkRef = useRef<SocialLogin | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
   const [provider, setProvider] = useState<any>(null);
+
+  const bundler: IBundler = new Bundler({
+    bundlerUrl: 'https://bundler.biconomy.io/api/v2/'+chainId+'/abc', // you can get this value from biconomy dashboard.     
+    chainId: chainId,
+    entryPointAddress: DEFAULT_ENTRYPOINT_ADDRESS,
+  })
+  
+  const paymaster: IPaymaster = new BiconomyPaymaster({
+    paymasterUrl: 'https://paymaster.biconomy.io/api/v1/'+chainId+'/vVbbCsVEp.14ff71ef-c84f-4684-ae2e-2d5a8adf5877' 
+  })
 
   useEffect(() => {
     let configureLogin:any
@@ -44,7 +53,7 @@ export default function Biconomy() {
       const socialLoginSDK = new SocialLogin()
       const signature1 = await socialLoginSDK.whitelistUrl("http://127.0.0.1:5173/")
       await socialLoginSDK.init({
-        chainId: ethers.utils.hexValue(ChainId.GOERLI).toString(),
+        chainId: ethers.utils.hexValue(chainId).toString(),
         network: "testnet",
         whitelistUrls: {
           "http://127.0.0.1:5173/": signature1,
@@ -72,7 +81,7 @@ export default function Biconomy() {
     try {
       const biconomySmartAccountConfig: BiconomySmartAccountConfig = {
         signer: web3Provider.getSigner(),
-        chainId: ChainId.GOERLI,
+        chainId: chainId,
         bundler: bundler,
         paymaster: paymaster
       }
@@ -115,7 +124,7 @@ export default function Biconomy() {
           <div className="buttonWrapper">
             <h3>Smart account address:</h3>
             <p>{smartAccount.address}</p>
-            <Counter smartAccount={smartAccount} provider={provider} />
+            <Gold smartAccount={smartAccount} provider={provider} />
             <button onClick={logout}>Logout</button>
           </div>
         )
@@ -130,5 +139,6 @@ export default function Biconomy() {
   )
 }
 
+export default Biconomy;
 
 
