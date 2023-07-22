@@ -60,7 +60,19 @@ const App: FunctionComponent = () => {
         new IBlockchain(5, "Goerli", true, [], [
             new IContract('0x813CE0d67d7a7534d26300E547C4B66a9B855A45', 'Gold')
         ]),
+        new IBlockchain(11155111, "Sepolia", true, [], [
+            new IContract('0x813CE0d67d7a7534d26300E547C4B66a9B855A45', 'Chainlink_to_mumbai'),
+            new IContract('0x83F3596A3Fa94Cf2eEB90622d514d185383E8836', 'Gold'),
+        ]),
+        new IBlockchain(80001, "Mumbai", true, [], [
+        ]),
         new IBlockchain(137, "Polygon"),
+        new IBlockchain(100, "Gnosis"),
+        new IBlockchain(1101, "Polygon zkEVM"),
+        new IBlockchain(245022934, "Neon EVM"),
+        new IBlockchain(5000, "Mantle"),
+        new IBlockchain(42220, "Celo"),
+        new IBlockchain(44787, "Alfajores Celo"),
     ]))
 
     return (
