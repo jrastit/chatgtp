@@ -8,9 +8,7 @@ import { BiconomySmartAccount,BiconomySmartAccountConfig, DEFAULT_ENTRYPOINT_ADD
 import { IPaymaster, BiconomyPaymaster,} from '@biconomy/paymaster'
 import Gold from './Components/Gold';
 import { IContext } from '../type/blockchain';
-
-
-
+import { Button } from 'react-bootstrap';
 
 interface Props {
   context: IContext
@@ -111,10 +109,10 @@ const Biconomy: React.FC<Props> = (
 
   return (
     <div>
-      <h1> Biconomy Smart Accounts using social login + Gasless Transactions</h1>
+      <h3>Biconomy Smart Accounts</h3>
 
       {
-        !smartAccount && !loading && <button onClick={login}>Login</button>
+        !smartAccount && !loading && <Button onClick={login}>Login</Button>
       }
       {
         loading && <p>Loading account details...</p>
@@ -122,19 +120,12 @@ const Biconomy: React.FC<Props> = (
       {
         !!smartAccount && (
           <div className="buttonWrapper">
-            <h3>Smart account address:</h3>
             <p>{smartAccount.address}</p>
-            <Gold smartAccount={smartAccount} provider={provider} />
-            <button onClick={logout}>Logout</button>
+            <p><Gold smartAccount={smartAccount} provider={provider} /></p>
+            <p><Button onClick={logout}>Logout</Button></p>
           </div>
         )
       }
-      <p>
-      Edit <code>src/App.tsx</code> and save to test
-      </p>
-      <a href="https://docs.biconomy.io/docs/overview" target="_blank" className="read-the-docs">
-  Click here to check out the docs
-    </a>
     </div>
   )
 }

@@ -95,6 +95,7 @@ const SafeWidget= () => {
 
     return (
         <div>
+            <h3>Safe Modular Abstarct Accounts</h3>
             {!authKitSignData &&
                 <Button onClick={() => openSafe()}>Login</Button>
             }
