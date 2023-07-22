@@ -62,8 +62,8 @@ const Wallet: FunctionComponent = () => {
                 <h1>Ethereum</h1>
                 <table>
                     <tbody>
-                    {data.EthereumBalances.TokenBalance.map((e) => (
-                        <tr>
+                    {data.EthereumBalances.TokenBalance.map((e,i) => (
+                        <tr key={`${i}`}>
                             <td>{e.formattedAmount}</td>
                             <td>{e.token.name}</td>
                         </tr>
@@ -73,8 +73,8 @@ const Wallet: FunctionComponent = () => {
                 <h1>Polygon</h1>
                 <table>
                     <tbody>
-                    {data.PolygonBalances.TokenBalance.map((e) => (
-                        <tr>
+                    {data.PolygonBalances.TokenBalance.map((e, i) => (
+                        <tr key={`${i}`}>
                             <td>{e.formattedAmount}</td>
                             <td>{e.token.name}</td>
                         </tr>
