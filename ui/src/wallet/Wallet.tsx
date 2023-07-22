@@ -2,6 +2,7 @@ import {gql, useQuery} from '@apollo/client';
 import {FunctionComponent, useState} from "react";
 import GraphFlow from '../GraphFlow/GraphFlow';
 import nodeDefaults from '../GraphFlow/NodeTypeDefault';
+import nodeNft from '../GraphFlow/NodeNft';
 import { Box, Spinner, useToast } from '@chakra-ui/react';
 
 const listTokensQuery = gql`
@@ -15,7 +16,15 @@ const listTokensQuery = gql`
           token {
             name
           }
+          tokenNfts {
+            contentValue {
+              image {
+                extraSmall
+              }
+            }
+          }
         }
+        
       }
       PolygonBalances: TokenBalances(
         input: {filter: {owner: {_eq: $owner}}, blockchain: polygon, limit: 200}
@@ -25,6 +34,13 @@ const listTokensQuery = gql`
           formattedAmount
           token {
             name
+          }
+          tokenNfts {
+            contentValue {
+              image {
+                extraSmall
+              }
+            }
           }
         }
       }
@@ -38,9 +54,15 @@ interface BlockchainResultType {
         token: {
             name: string,
         },
+        tokenNfts:{
+            contentValue: {
+              image: {
+                extraSmall:any
+              }
+            }
+          },
     }[],
 }
-
 
 
 interface TokenListResultType {
@@ -82,78 +104,100 @@ const Wallet: FunctionComponent = () => {
             isClosable: true,
         })
     } else if (data) {
+        
         const nodes = [{
             id:'0',
-            type:'input',
-            data: {label:owner, type:"user"},
+            type:'nodeUser',
+            data: {label:owner, type:"user", img:''},
             position: { x: 0, y: 0 },
-            ...nodeDefaults
         }];
 
         const edges = [];
-
+        const circleRadius = 200;
+        const e= Math.floor(Math.max(data.EthereumBalances.TokenBalance.length, data.PolygonBalances.TokenBalance.length)/Math.floor((2*Math.PI * circleRadius)/ (150+10)));
         if (data.EthereumBalances) {
             const id_eth=nodes.length;
+            const blockchainNodeX = -(150+e*100);
+            const blockchainNodeY = (150+e*100);
             nodes.push({
                 id:`${id_eth}`,
-                type: "",
-                data:{label:"Ethereum", type:"blockchain"},
-                position: {x:-50, y: 100},
-                ...nodeDefaults
+                type: "nodeBlockChain",
+                data:{label:"Ethereum", type:"blockchain", img:''},
+                position: {x:blockchainNodeX, y: blockchainNodeY},
             })
             edges.push({
                 id:`0-${id_eth}`, 
                 source:'0',
-                target:`${id_eth}`
+                target:`${id_eth}`,
+                type:'straight',
+                style:{ stroke: 'blue', strokeWidth: 2 }
             })
-            var count=0
+            
+            const numNodes = Math.floor((2*Math.PI * circleRadius)/ (150+10));
+            const angleBetweenWalletNodes = (Math.PI) / numNodes;
+            let count=0;
+            let angle = 0;
             for (let e of data.EthereumBalances.TokenBalance) {
+                const walletNodeX = blockchainNodeX + (circleRadius+75*Math.floor(angle/(2*Math.PI))) * Math.cos(angle );
+                const walletNodeY = blockchainNodeY + (circleRadius+75*Math.floor(angle/(2*Math.PI))) * Math.sin(angle);
 
                 nodes.push({
                     id:`${nodes.length}`,
-                    type: "output",
-                    data:{label:e.token.name, type:"chain"},
-                    position: {x:-10-60*(data.EthereumBalances.TokenBalance.length-count), y: 200},
-                    ...nodeDefaults 
+                    type: "nodeNft",
+                    data:{label:e.token.name, type:"wallet", img:e?.tokenNfts?.contentValue?.image?.extraSmall },
+                    position: {x: walletNodeX, y: walletNodeY},
                 });
                 edges.push({
                     id:`${id_eth}-${nodes.length-1}`, 
                     source:`${id_eth}`,
-                    target:`${nodes.length-1}`
+                    target:`${nodes.length-1}`,
+                    type:'straight'
                 })
                 count=count+1;
+                angle += angleBetweenWalletNodes;
             }
         }
         if (data.PolygonBalances) {
             const id_poly=nodes.length;
+            const blockchainNodeX = 150+e*100;
+            const blockchainNodeY = 150+e*100;
             nodes.push({
                 id:`${id_poly}`,
-                type: "",
-                data:{label:"Polygone", type:"blockchain"},
-                position: {x:50, y: 100},
-                ...nodeDefaults
+                type: "nodeBlockChain",
+                data:{label:"Polygone", type:"blockchain", img:''},
+                position: {x:blockchainNodeX, y: blockchainNodeY},
             })
             edges.push({
                 id:`0-${id_poly}`, 
                 source:'0',
-                target:`${id_poly}`
+                target:`${id_poly}`,
+                type:'straight',
+                style:{ stroke: 'blue', strokeWidth: 2 }
             })
-            var count=0
-            for (let e of data.EthereumBalances.TokenBalance) {
 
+            const numNodes = Math.floor((2*Math.PI * circleRadius)/ (150+10));
+            
+            const angleBetweenWalletNodes = (Math.PI) / numNodes;
+            
+            let count=0;
+            let angle =0;
+            for (let e of data?.PolygonBalances?.TokenBalance) {
+                const walletNodeX = blockchainNodeX + (circleRadius+100*Math.floor(angle/(2*Math.PI))) * Math.cos(angle ) ;
+                const walletNodeY = blockchainNodeY + (circleRadius+100*Math.floor(angle/(2*Math.PI))) * Math.sin(angle );
                 nodes.push({
                     id:`${nodes.length}`,
-                    type: "output",
-                    data:{label:e.token.name, type:"chain"},
-                    position: {x:10+60*(data.EthereumBalances.TokenBalance.length-count), y: 200},
-                    ...nodeDefaults 
+                    type: "nodeNft",
+                    data:{label:e.token.name, type:"wallet", img:e?.tokenNfts?.contentValue?.image?.extraSmall},
+                    position: {x:walletNodeX, y: walletNodeY}
                 });
                 edges.push({
                     id:`${id_poly}-${nodes.length-1}`, 
                     source:`${id_poly}`,
-                    target:`${nodes.length-1}`
+                    target:`${nodes.length-1}`,
+                    type:'straight'
                 })
                 count=count+1;
+                angle += angleBetweenWalletNodes;
             }
         }
 

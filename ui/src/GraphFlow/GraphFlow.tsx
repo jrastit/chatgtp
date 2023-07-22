@@ -14,6 +14,9 @@ import 'reactflow/dist/style.css';
 import "./style.css";
 import NodeLoad from './NodeLoad';
 import Pop from './Pop';
+import NodeNft from './NodeNft';
+import NodeBlockChain from './NodeTypeBlockChain';
+import NodeUser from './NodeUser';
 
 interface Edges {
     id: string
@@ -40,7 +43,7 @@ const reactFlowStyle = {
     height: 300,
   };
 
-const nodeTypes = { nodeLoader: NodeLoad };
+const nodeTypes = { nodeLoader: NodeLoad, nodeNft: NodeNft, nodeBlockChain: NodeBlockChain, nodeUser: NodeUser };
 
 const MIN_DISTANCE = 200;
 
@@ -53,7 +56,7 @@ function Graph({initialNodes, initialEdges}: GraphProps) {
     const [nodeSelect, setNodeSelect] = useState<Node>();
     const store = useStoreApi();
 
-    const onConnect = useCallback((params:any) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
+    const onConnect = useCallback((params:any) => setEdges((eds) => addEdge({...params, smooth:'straight'}, eds, )), [setEdges]);
 
     const getClosestEdge = useCallback((node:any) => {
         const {nodeInternals}  = store.getState();
@@ -61,7 +64,7 @@ function Graph({initialNodes, initialEdges}: GraphProps) {
 
         const closestNode:any = storeNodes.reduce(
         (res:any, n:any) => {
-            if (n?.id !== node?.id && n.data.type==="blockchain" && node.data.type=="chain") {
+            if (n?.id !== node?.id && n.data.type==="blockchain" && node.data.type=="wallet") {
             const dx = n.positionAbsolute.x - node.positionAbsolute.x;
             const dy = n.positionAbsolute.y - node.positionAbsolute.y;
             const d = Math.sqrt(dx * dx + dy * dy);
@@ -92,7 +95,8 @@ function Graph({initialNodes, initialEdges}: GraphProps) {
         // target: closeNodeIsSource ? node.id : closestNode.node.id,
         source: `${closestNode.node.id}`,
         target: `${node.id}`,
-        className:""
+        className:"",
+        type:'straight'
         };
     }, []);
 
@@ -173,7 +177,7 @@ function Graph({initialNodes, initialEdges}: GraphProps) {
             
                 const dropNode:any = nodes.find(node => closeEdge ? node.id === closeEdge.target: null)
     
-                if (dropNode && (dropNode.data.type ==="chain" || dropNode.data.type==="nodeLoader") && nextEdges.find((ne)=>  ne.target===dropNode.id)) {
+                if (dropNode && (dropNode.data.type ==="wallet" || dropNode.data.type==="nodeLoader") && nextEdges.find((ne)=>  ne.target===dropNode.id)) {
 
                     nextEdges = nextEdges.filter((ne)=>  ne.target!==dropNode.id )
 
