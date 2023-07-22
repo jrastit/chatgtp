@@ -69,7 +69,7 @@ export const biconomy_transfer_gold = async (amount: number, to: string, contrac
 }
 
 export const biconomy_mint_gold = async (amount: number, contract:any, goldAddress: string, wallet:IWallet) => {
-      const data = contract.interface.encodeFunctionData("self_mint", [1]);
+      const data = contract.interface.encodeFunctionData("self_mint", [amount]);
 
       const tx1 = {
         to: goldAddress,
