@@ -33,7 +33,7 @@ const ActionProvider: FunctionComponent<ActionProviderProps> = ({createChatBotMe
 
     const handleUserMessage: Actions['handleUserMessage'] = async (message: string) => {
         history.current.push({role: 'user', content: message});
-        const chatBotMessage = createChatBotMessage('', {loading: true});
+        const chatBotMessage = createChatBotMessage('', {loading: true, delay: 500});
         setState((prev) => ({
             ...prev,
             messages: [...prev.messages, chatBotMessage],
@@ -52,10 +52,13 @@ const ActionProvider: FunctionComponent<ActionProviderProps> = ({createChatBotMe
         history.current.push(answer);
 
         if (answer.function_call) {
-            chatBotMessage.message = 'Function call';
+            chatBotMessage.message = 'I have prepared the transaction for you, click to validate it';
+            chatBotMessage.widget = 'actionWidget';
+            chatBotMessage.payload = answer.function_call;
         } else {
             chatBotMessage.message = answer.content;
         }
+        chatBotMessage.loading = false;
         setState((prev) => ({...prev}));
     };
 
