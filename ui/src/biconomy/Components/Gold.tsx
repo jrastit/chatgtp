@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
-import {  IHybridPaymaster,SponsorUserOperationDto, PaymasterMode,} from '@biconomy/paymaster'
-import abi from "../../utils/erc20Abi.json";
-import { ethers } from "ethers";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getGoldBalance } from "../../action/view";
+import { biconomy_mint_gold } from "../../action/action";
 
 
 interface Props {
@@ -13,22 +11,13 @@ interface Props {
 }
 
 const TotalCountDisplay: React.FC<{ count: number }> = ({ count }) => {
-  return <div>Total count is {count}</div>;
+  return <div>Your Gold balance is {count}</div>;
 };
-
-
-  let paymasterServiceData: SponsorUserOperationDto = {
-    mode: PaymasterMode.SPONSORED,
-    // optional params...
-  };
 
 
 const Gold: React.FC<Props> = ({ smartAccount, provider }) => {
   const [count, setCount] = useState<number>(0);
-  const [goldContract, setGoldContract] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  const goldAddress = '0x813CE0d67d7a7534d26300E547C4B66a9B855A45';
 
   useEffect(() => {
     setIsLoading(true);
@@ -51,6 +40,7 @@ const Gold: React.FC<Props> = ({ smartAccount, provider }) => {
         theme: "dark",
       });
     }
+    setIsLoading(false);
   };
 
   const self_mint = async () => {
@@ -66,46 +56,21 @@ const Gold: React.FC<Props> = ({ smartAccount, provider }) => {
         theme: "dark",
       });
 
-      const contract = new ethers.Contract(goldAddress, abi.output.abi, provider);
-      const data = contract.interface.encodeFunctionData("self_mint", [1]);
+      const userOpResponse = await biconomy_mint_gold(1, provider, smartAccount);
 
-      const tx1 = {
-        to: goldAddress,
-        data: data,
-      };
+      toast.success(`Transaction Hash: ${userOpResponse.userOpHash}`, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
 
-      let partialUserOp = await smartAccount.buildUserOp([tx1]);
+      getBalance(true);
 
-
-      try {
-        console.log("Partial User Op:", partialUserOp);
-
-         const biconomyPaymaster = smartAccount.paymaster as IHybridPaymaster<SponsorUserOperationDto>;
-        const paymasterAndDataResponse = await biconomyPaymaster.getPaymasterAndData(partialUserOp, paymasterServiceData);
-        partialUserOp.paymasterAndData = paymasterAndDataResponse.paymasterAndData;
-        console.log("Paymaster and data:", paymasterAndDataResponse.paymasterAndData);
-        const userOpResponse = await smartAccount.sendUserOp(partialUserOp);
-        const transactionDetails = await userOpResponse.wait();
-
-        console.log("Transaction Details:", transactionDetails);
-        console.log("Transaction Hash:", userOpResponse.userOpHash);
-
-        toast.success(`Transaction Hash: ${userOpResponse.userOpHash}`, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
-
-        getBalance(true);
-      } catch (e) {
-        console.error("Error executing transaction:", e);
-        // ... handle the error if needed ...
-      }
     } catch (error) {
       console.error("Error executing transaction:", error);
       toast.error('Error occurred, check the console', {
@@ -123,7 +88,9 @@ const Gold: React.FC<Props> = ({ smartAccount, provider }) => {
 
   return (
     <>
-      <TotalCountDisplay count={count} />
+      {isLoading && <div>Loading...</div>}
+      {!isLoading && <div><TotalCountDisplay count={count} /></div>}
+      
       <ToastContainer
         position="top-right"
         autoClose={5000}

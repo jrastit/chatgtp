@@ -70,7 +70,7 @@ const App: FunctionComponent = () => {
                 
                 
                 <Box display="flex" justifyContent="space-around" alignContent="center">
-                <Biconomy context={context} chainId={137} setContext={setContext}></Biconomy>
+                <Biconomy context={context} chainId={5} setContext={setContext}></Biconomy>
                 <SafeWidget/>
                 <Button colorScheme='blue' width="fit-content" onClick={isOpen ? onClose : onOpen} leftIcon={<ChatIcon />}>{isOpen ? "Close Chatbot" : "Open Chatbot"}</Button> 
             
