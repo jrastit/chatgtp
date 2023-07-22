@@ -100,6 +100,7 @@ function Graph({initialNodes, initialEdges}: GraphProps) {
         };
     }, []);
 
+
     const onNodeDrag = useCallback(
     (_:any, node:any) => {
         const closeEdge:any = getClosestEdge(node);
@@ -145,21 +146,113 @@ function Graph({initialNodes, initialEdges}: GraphProps) {
   );
 
   useEffect(()=> {
+    // const radius=150;
+
     setNodes((nds) =>
+        
         nds.map((node) => {
+            
             if (edges.find((e)=> e.target===node.id && e.className=="new")) {
                 node.type="nodeLoader"
                 
             }
+            
             return node;
         })
         );
     
   }, [edges]);
 
+    useEffect(()=>{
+        const blockchainEdgesCount: { [key: string]: number } = {};
+        edges.forEach((edge) => {
+            const { source, target } = edge;
+            if (blockchainEdgesCount[source]) {
+                blockchainEdgesCount[source]++;
+            } else {
+                blockchainEdgesCount[source] = 1;
+            }
+        });
+        let maxEdgesCount = 0;
+        Object.entries(blockchainEdgesCount).forEach(([blockchain, count]) => {
+        if (count > maxEdgesCount) {
+            maxEdgesCount = count;
+        }
+        });
+
+
+        
+        const angleBetweenBlockChainNodes = 360 / (nodes.filter((n) => n.data.type === 'blockchain').length);
+        let angleBlockChain = 0;
+        const Radius=150;
+        const circleRadius=200;
+        const e= Math.floor(maxEdgesCount/Math.floor((2*Math.PI * circleRadius)/ (150+10)));
+        const blockchainRadius = Radius+e*110;
+
+        
+
+        const blockchainPosition: { [key: string]: number[] } = {};
+        const blockchainAngle: { [key: string]: number } = {};
+        const blockchainCount: { [key: string]: number } = {};
+        nodes.forEach((node) => {
+            if (node.data.type==='blockchain') {
+                blockchainCount[node.id]=0;
+                blockchainAngle[node.id]=0;
+                const blockchainNodeX = blockchainRadius * Math.cos(angleBlockChain*(Math.PI/180));
+                const blockchainNodeY = blockchainRadius * Math.sin(angleBlockChain*(Math.PI/180));
+                blockchainPosition[node.id]=[blockchainNodeX,blockchainNodeY]
+                angleBlockChain+=angleBetweenBlockChainNodes;
+            }
+        });
+
+        const numNodes = Math.floor((2*Math.PI * circleRadius)/ (150+10));
+            
+        const angleBetweenWalletNodes = (Math.PI) / numNodes;
+
+        setNodes((nds) =>
+        
+        nds.map((node) => {
+            
+            if (edges.find((e)=> e.target===node.id && e.className=="new")) {
+                node.type="nodeLoader"
+                
+            }
+            if (node.data.type==='user'){
+                node.position.x=0;
+                node.position.y=0;
+            } else if (node.data.type=='blockchain') {
+                
+                
+                node.position.x = blockchainPosition[node.id][0];
+                node.position.y = blockchainPosition[node.id][1];
+                angleBlockChain += angleBetweenBlockChainNodes;
+                
+             }
+            else{
+                const blockchainId=edges.find(e=>e.target===node.id)?.source
+                if (blockchainId) {
+                    const angle = blockchainAngle[blockchainId]
+                    const walletNodeX = blockchainPosition[blockchainId][0] + (circleRadius+100*Math.floor(angle/(2*Math.PI))) * Math.cos(angle );
+                    const walletNodeY = blockchainPosition[blockchainId][1]  + (circleRadius+100*Math.floor(angle/(2*Math.PI))) * Math.sin(angle);
+                    node.position.x=walletNodeX;
+                    node.position.y=walletNodeY;
+                    
+                    blockchainCount[blockchainId]++;
+                    
+                    blockchainAngle[blockchainId] += angleBetweenWalletNodes;
+                }
+                
+
+            } 
+            
+            return node;
+        })
+        );
+    
+  }, []);
+
     const updateNode = () =>  {
         const node = nodeSelect;
-        console.log(nodeSelect);
         const closeEdge = getClosestEdge(node);
         setEdges((es) => {
             console.log(es)
@@ -177,7 +270,7 @@ function Graph({initialNodes, initialEdges}: GraphProps) {
             
                 const dropNode:any = nodes.find(node => closeEdge ? node.id === closeEdge.target: null)
     
-                if (dropNode && (dropNode.data.type ==="wallet" || dropNode.data.type==="nodeLoader") && nextEdges.find((ne)=>  ne.target===dropNode.id)) {
+                if (dropNode && (dropNode.data.type ==="wallet") && nextEdges.find((ne)=>  ne.target===dropNode.id)) {
 
                     nextEdges = nextEdges.filter((ne)=>  ne.target!==dropNode.id )
 
@@ -192,6 +285,94 @@ function Graph({initialNodes, initialEdges}: GraphProps) {
 
         return nextEdges;
       });
+      const blockchainEdgesCount: { [key: string]: number } = {};
+        edges.forEach((edge) => {
+            const { source, target } = edge;
+            if (blockchainEdgesCount[source]) {
+                blockchainEdgesCount[source]++;
+            } else {
+                blockchainEdgesCount[source] = 1;
+            }
+        });
+        let maxEdgesCount = 0;
+        Object.entries(blockchainEdgesCount).forEach(([blockchain, count]) => {
+        if (count > maxEdgesCount) {
+            maxEdgesCount = count;
+        }
+        });
+
+
+        
+        const angleBetweenBlockChainNodes = 360 / (nodes.filter((n) => n.data.type === 'blockchain').length);
+        let angleBlockChain = 0;
+        const Radius=150;
+        const circleRadius=200;
+        const e= Math.floor(maxEdgesCount/Math.floor((2*Math.PI * circleRadius)/ (150+10)));
+        const blockchainRadius = Radius+e*110;
+
+        
+
+        const blockchainPosition: { [key: string]: number[] } = {};
+        const blockchainAngle: { [key: string]: number } = {};
+        const blockchainCount: { [key: string]: number } = {};
+        nodes.forEach((node) => {
+            if (node.data.type==='blockchain') {
+                blockchainCount[node.id]=0;
+                blockchainAngle[node.id]=0;
+                const blockchainNodeX = blockchainRadius * Math.cos(angleBlockChain*(Math.PI/180));
+                const blockchainNodeY = blockchainRadius * Math.sin(angleBlockChain*(Math.PI/180));
+                blockchainPosition[node.id]=[blockchainNodeX,blockchainNodeY]
+                angleBlockChain+=angleBetweenBlockChainNodes;
+            }
+        });
+
+        const numNodes = Math.floor((2*Math.PI * circleRadius)/ (150+10));
+            
+        const angleBetweenWalletNodes = (Math.PI) / numNodes;
+
+        setNodes((nds) =>
+        
+        nds.map((node) => {
+            
+            if (edges.find((e)=> e.target===node.id && e.className=="new")) {
+                node.type="nodeLoader"
+                
+            }
+            if (node.data.type==='user'){
+                node.position.x=0;
+                node.position.y=0;
+            } else if (node.data.type=='blockchain') {
+                
+                
+                node.position.x = blockchainPosition[node.id][0];
+                node.position.y = blockchainPosition[node.id][1];
+                angleBlockChain += angleBetweenBlockChainNodes;
+                
+             }
+            else{
+                
+                const blockchainId=(closeEdge && closeEdge.target===node.id) ? closeEdge.source : edges.find(e=>e.target===node.id)?.source;
+                
+                
+                if (blockchainId) {
+                    const angle = blockchainAngle[blockchainId]
+                    const walletNodeX = blockchainPosition[blockchainId][0] + (circleRadius+100*Math.floor(angle/(2*Math.PI))) * Math.cos(angle );
+                    const walletNodeY = blockchainPosition[blockchainId][1]  + (circleRadius+100*Math.floor(angle/(2*Math.PI))) * Math.sin(angle);
+                    node.position.x=walletNodeX;
+                    node.position.y=walletNodeY;
+                    
+                    blockchainCount[blockchainId]++;
+                    
+                    blockchainAngle[blockchainId] += angleBetweenWalletNodes;
+                }
+                
+
+            } 
+            
+            return node;
+        })
+        );
+
     }
     
    

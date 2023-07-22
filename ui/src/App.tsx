@@ -72,7 +72,7 @@ const App: FunctionComponent = () => {
                 <Box display="flex" justifyContent="space-around" alignContent="center">
                 <Biconomy context={context} chainId={5} setContext={setContext}></Biconomy>
                 <SafeWidget/>
-                <Button colorScheme='blue' width="fit-content" onClick={isOpen ? onClose : onOpen} leftIcon={<ChatIcon />}>{isOpen ? "Close Chatbot" : "Open Chatbot"}</Button> 
+                <Button colorScheme='blue' width="fit-content" onClick={isOpen ? onClose : onOpen} leftIcon={<ChatIcon />}>{!isOpen ? "Close Chatbot" : "Open Chatbot"}</Button> 
             
             
             
@@ -80,13 +80,13 @@ const App: FunctionComponent = () => {
                 {/* <GraphFlow initialEdges={edges} initialNodes={nodes} /> */}
                 <Stack spacing={4} >
                 
-                <Wallet/>
+                <Wallet IContext={context}/>
                 
 
-                {isOpen && (<Box 
+                {!isOpen && (<Box 
                 position="fixed"
                 bottom="10px"
-                right="0"
+                right="2px"
                 width="fit-content" 
                 paddingLeft="30px"
                 >

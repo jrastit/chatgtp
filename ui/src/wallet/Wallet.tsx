@@ -1,9 +1,10 @@
 import {gql, useQuery} from '@apollo/client';
-import {FunctionComponent, useState} from "react";
+import {FunctionComponent, useEffect, useState} from "react";
 import GraphFlow from '../GraphFlow/GraphFlow';
 import nodeDefaults from '../GraphFlow/NodeTypeDefault';
 import nodeNft from '../GraphFlow/NodeNft';
 import {Box, Spinner, useToast} from '@chakra-ui/react';
+import { IBlockchain, IContext } from '../type/blockchain';
 
 const listTokensQuery = gql`
     query MyQuery($owner: Identity) {
@@ -70,14 +71,41 @@ interface TokenListResultType {
     PolygonBalances: BlockchainResultType,
 }
 
-const Wallet: FunctionComponent = () => {
+interface WalletProps {
+    IContext: IContext
+}
+
+function Wallet ({IContext}: WalletProps) {
     const toast = useToast()
+    // const [context, setContext] = useState<IContext>(IContext);
+    
     const [owner /*, setOwner*/] = useState('jrastit.eth')
     const {loading, error, data} = useQuery<TokenListResultType>(listTokensQuery, {
         variables: {
             owner,
         }
     });
+
+    // const [dataContext, setDataContext] = useState<BlockchainResultType[]>([])
+
+    // useEffect(()=> {
+    //     context.blockchainList.map((b)=> {
+    //         let data=[];
+    //         if (b.name ==="Ethereum" || b.name==="Polygone") {
+    //             for (let owner of b.walletList) {
+                
+    //             const {loading, error, data} = useQuery<TokenListResultType>(listTokensQuery, {
+    //                 variables: {
+    //                     owner,
+    //                 }
+    //             });
+    //         }
+    //     }
+        
+
+    //     )
+        
+    // }, [context])
 
     if (loading) {
         return (
@@ -101,7 +129,10 @@ const Wallet: FunctionComponent = () => {
             duration: 9000,
             isClosable: true,
         })
-        return undefined;
+        return (
+            <>
+            </>
+        );
     } else if (data) {
         
         const nodes = [{
@@ -114,6 +145,7 @@ const Wallet: FunctionComponent = () => {
         const edges = [];
         const circleRadius = 200;
         const e= Math.floor(Math.max(data.EthereumBalances.TokenBalance.length, data.PolygonBalances.TokenBalance.length)/Math.floor((2*Math.PI * circleRadius)/ (150+10)));
+        
         if (data.EthereumBalances) {
             const id_eth=nodes.length;
             const blockchainNodeX = -(150+e*100);
@@ -214,7 +246,10 @@ const Wallet: FunctionComponent = () => {
             isClosable: true,
         })
 
-        return undefined;
+        return (
+            <>
+            </>
+        );
     }
 };
 
