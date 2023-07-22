@@ -55,7 +55,7 @@ import {ChatIcon} from "@chakra-ui/icons"
 
 const App: FunctionComponent = () => {
     const {isOpen, onOpen, onClose} = useDisclosure();
-    const [context, setContext] = useState<IContext>(new IContext([
+    const [context, setContext0] = useState<IContext>(new IContext([
         new IBlockchain(1, "Ethereum"),
         new IBlockchain(5, "Goerli", true, [], [
             new IContract('0x813CE0d67d7a7534d26300E547C4B66a9B855A45', 'Gold')
@@ -73,6 +73,11 @@ const App: FunctionComponent = () => {
         new IBlockchain(42220, "Celo"),
         new IBlockchain(44787, "Alfajores Celo"),
     ]))
+
+    const setContext = (context: IContext) => {
+        const newContext = new IContext(context.blockchainList);
+        return setContext0(newContext);
+    };
 
     return (
         <ChakraProvider>
