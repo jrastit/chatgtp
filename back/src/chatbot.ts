@@ -8,9 +8,9 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
-const walletAssistantPrompt = fs.readFileSync('prompt/wallet-assistant.txt', 'utf-8');
-
 export const chatbot: RequestHandler = async (req, res) => {
+    const walletAssistantPrompt = fs.readFileSync('prompt/wallet-assistant.txt', 'utf-8');
+
     const messages = req.body.messages;
     console.log('================ Processing chatbot request ================');
     console.log(JSON.stringify({messages}));
