@@ -12,6 +12,8 @@ const walletAssistantPrompt = fs.readFileSync('prompt/wallet-assistant.txt', 'ut
 
 export const chatbot: RequestHandler = async (req, res) => {
     const messages = req.body.messages;
+    console.log('================ Processing chatbot request ================');
+    console.log(JSON.stringify({messages}));
 
     try {
         const chatCompletion = await openai.createChatCompletion({
@@ -22,10 +24,15 @@ export const chatbot: RequestHandler = async (req, res) => {
             ],
         });
 
-        const answer = chatCompletion.data.choices[0].message?.content;
+        const data = chatCompletion.data;
+        console.log('================ Chatbot response received ================');
+        console.log(JSON.stringify(data));
 
+        const answer = data.choices[0].message?.content;
         res.json({answer});
     } catch (error: any) {
+        console.log('================= Chatbot error ================');
+        console.error(error);
         if (error.response) {
             console.log(error.response.status);
             console.log(error.response.data);
