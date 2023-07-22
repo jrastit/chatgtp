@@ -2,7 +2,7 @@ import {gql, useQuery} from '@apollo/client';
 import {FunctionComponent, useState} from "react";
 import GraphFlow from '../GraphFlow/GraphFlow';
 import nodeDefaults from '../GraphFlow/NodeTypeDefault';
-import { Box, Spinner, useToast } from '@chakra-ui/react';
+import {Box, Spinner, useToast} from '@chakra-ui/react';
 
 const listTokensQuery = gql`
     query MyQuery($owner: Identity) {
@@ -42,7 +42,6 @@ interface BlockchainResultType {
 }
 
 
-
 interface TokenListResultType {
     EthereumBalances: BlockchainResultType,
     PolygonBalances: BlockchainResultType,
@@ -61,15 +60,15 @@ const Wallet: FunctionComponent = () => {
         // return 'Loading...';
         return (
             <>
-            <Box
-            width="100%"
-            height="300px" // Ensure the height value is specified in pixels, e.g., '300px'
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            >
-                <Spinner />
-            </Box>
+                <Box
+                    width="100%"
+                    height="300px" // Ensure the height value is specified in pixels, e.g., '300px'
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                    <Spinner/>
+                </Box>
             </>
         )
     } else if (error) {
@@ -83,85 +82,85 @@ const Wallet: FunctionComponent = () => {
         })
     } else if (data) {
         const nodes = [{
-            id:'0',
-            type:'input',
-            data: {label:owner, type:"user"},
-            position: { x: 0, y: 0 },
+            id: '0',
+            type: 'input',
+            data: {label: owner, type: "user"},
+            position: {x: 0, y: 0},
             ...nodeDefaults
         }];
 
         const edges = [];
 
         if (data.EthereumBalances) {
-            const id_eth=nodes.length;
+            const id_eth = nodes.length;
             nodes.push({
-                id:`${id_eth}`,
+                id: `${id_eth}`,
                 type: "",
-                data:{label:"Ethereum", type:"blockchain"},
-                position: {x:-50, y: 100},
+                data: {label: "Ethereum", type: "blockchain"},
+                position: {x: -50, y: 100},
                 ...nodeDefaults
             })
             edges.push({
-                id:`0-${id_eth}`, 
-                source:'0',
-                target:`${id_eth}`
+                id: `0-${id_eth}`,
+                source: '0',
+                target: `${id_eth}`
             })
-            var count=0
-            for (let e of data.EthereumBalances.TokenBalance) {
+            var count = 0
+            for (let e of data.EthereumBalances.TokenBalance ?? []) {
 
                 nodes.push({
-                    id:`${nodes.length}`,
+                    id: `${nodes.length}`,
                     type: "output",
-                    data:{label:e.token.name, type:"chain"},
-                    position: {x:-10-60*(data.EthereumBalances.TokenBalance.length-count), y: 200},
-                    ...nodeDefaults 
+                    data: {label: e.token.name, type: "chain"},
+                    position: {x: -10 - 60 * (data.EthereumBalances.TokenBalance.length - count), y: 200},
+                    ...nodeDefaults
                 });
                 edges.push({
-                    id:`${id_eth}-${nodes.length-1}`, 
-                    source:`${id_eth}`,
-                    target:`${nodes.length-1}`
+                    id: `${id_eth}-${nodes.length - 1}`,
+                    source: `${id_eth}`,
+                    target: `${nodes.length - 1}`
                 })
-                count=count+1;
+                count = count + 1;
             }
         }
         if (data.PolygonBalances) {
-            const id_poly=nodes.length;
+            const id_poly = nodes.length;
             nodes.push({
-                id:`${id_poly}`,
+                id: `${id_poly}`,
                 type: "",
-                data:{label:"Polygone", type:"blockchain"},
-                position: {x:50, y: 100},
+                data: {label: "Polygone", type: "blockchain"},
+                position: {x: 50, y: 100},
                 ...nodeDefaults
             })
             edges.push({
-                id:`0-${id_poly}`, 
-                source:'0',
-                target:`${id_poly}`
+                id: `0-${id_poly}`,
+                source: '0',
+                target: `${id_poly}`
             })
-            var count=0
-            for (let e of data.EthereumBalances.TokenBalance) {
+            var count = 0
+            for (let e of data.EthereumBalances.TokenBalance ?? []) {
 
                 nodes.push({
-                    id:`${nodes.length}`,
+                    id: `${nodes.length}`,
                     type: "output",
-                    data:{label:e.token.name, type:"chain"},
-                    position: {x:10+60*(data.EthereumBalances.TokenBalance.length-count), y: 200},
-                    ...nodeDefaults 
+                    data: {label: e.token.name, type: "chain"},
+                    position: {x: 10 + 60 * (data.EthereumBalances.TokenBalance.length - count), y: 200},
+                    ...nodeDefaults
                 });
                 edges.push({
-                    id:`${id_poly}-${nodes.length-1}`, 
-                    source:`${id_poly}`,
-                    target:`${nodes.length-1}`
+                    id: `${id_poly}-${nodes.length - 1}`,
+                    source: `${id_poly}`,
+                    target: `${nodes.length - 1}`
                 })
-                count=count+1;
+                count = count + 1;
             }
         }
 
-        
+
         return (
-            
-            <Box width="80%" style={{backgroundColor:"white"}} height="500px" marginInline="auto">
-                <GraphFlow initialEdges={edges ? edges : []} initialNodes={nodes} />
+
+            <Box width="80%" style={{backgroundColor: "white"}} height="500px" marginInline="auto">
+                <GraphFlow initialEdges={edges ? edges : []} initialNodes={nodes}/>
                 {/* <h1>Ethereum</h1>
                 <table>
                     <tbody>
@@ -185,7 +184,7 @@ const Wallet: FunctionComponent = () => {
                     </tbody>
                 </table> */}
             </Box>
-            
+
         )
     } else {
         toast({
