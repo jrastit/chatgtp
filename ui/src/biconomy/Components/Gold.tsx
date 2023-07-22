@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { BiconomySmartAccount} from "@biconomy/account"
 import {  IHybridPaymaster,SponsorUserOperationDto, PaymasterMode,} from '@biconomy/paymaster'
-import abi from "../utils/erc20Abi.json";
+import abi from "../../utils/erc20Abi.json";
 import { ethers } from "ethers";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { IPaymaster, BiconomyPaymaster,} from '@biconomy/paymaster'
+import { getGoldBalance } from "../../action/view";
 
 
 interface Props {
@@ -33,15 +32,13 @@ const Gold: React.FC<Props> = ({ smartAccount, provider }) => {
 
   useEffect(() => {
     setIsLoading(true);
-    const interval = setInterval(() => getCount(false), 5000);
+    const interval = setInterval(() => getBalance(false), 5000);
     return () => clearInterval(interval);
   }, []);
 
-  const getCount = async (isUpdating: boolean) => {
-    const contract = new ethers.Contract(goldAddress, abi.output.abi, provider);
-    setGoldContract(contract);
-    const currentCount = await contract.balanceOf(smartAccount.address);
-    setCount(currentCount.toNumber());
+  const getBalance = async (isUpdating: boolean) => {
+    const balance = await getGoldBalance(smartAccount.address, provider);
+    setCount(balance.toNumber());
     if (isUpdating) {
       toast.success('Count has been updated!', {
         position: "top-right",
@@ -104,7 +101,7 @@ const Gold: React.FC<Props> = ({ smartAccount, provider }) => {
           theme: "dark",
         });
 
-        getCount(true);
+        getBalance(true);
       } catch (e) {
         console.error("Error executing transaction:", e);
         // ... handle the error if needed ...
