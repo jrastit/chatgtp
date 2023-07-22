@@ -3,24 +3,35 @@ import {  IHybridPaymaster,SponsorUserOperationDto, PaymasterMode,} from '@bicon
 import abi from "../utils/erc20Abi.json";
 import { ethers } from "ethers";
 import 'react-toastify/dist/ReactToastify.css';
-import { IContext, IBiconomy } from '../type/blockchain';
-
-const goldAddress = '0x813CE0d67d7a7534d26300E547C4B66a9B855A45';
+import { IContext, IBiconomy, IWallet } from '../type/blockchain';
 
 let paymasterServiceData: SponsorUserOperationDto = {
     mode: PaymasterMode.SPONSORED,
     // optional params...
   };
 
-export const biconomy_mint_gold = async (amount: number, bic : IBiconomy, context: IContext, chainId: number) => {
+export const mint_gold = async (amount: number, walletAddress: string, context: IContext, chainId: number) => {
+    const wallet = context.getBlockchain(chainId).getWallet(walletAddress);
     const goldAddress = context.getBlockchain(chainId).getContract('Gold').address;
-    const contract = new ethers.Contract(goldAddress, abi.output.abi, bic.provider);
+    const provider = wallet.wallet.provider;
+    const contract = new ethers.Contract(goldAddress, abi.output.abi, provider);
+    if (wallet.type === 'Biconomy') {
+        return biconomy_mint_gold(amount, contract, goldAddress, wallet);
+    } else {
+        throw new Error(`Wallet type ${wallet.type} not supported`)
+    }
+
+}
+
+export const biconomy_mint_gold = async (amount: number, contract:any, goldAddress: string, wallet:IWallet) => {
       const data = contract.interface.encodeFunctionData("self_mint", [1]);
 
       const tx1 = {
         to: goldAddress,
         data: data,
       };
+
+      const bic = wallet.wallet
 
       let partialUserOp = await bic.smartAccount.buildUserOp([tx1]);
 

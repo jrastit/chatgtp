@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getGoldBalance } from "../../action/view";
-import { biconomy_mint_gold } from "../../action/action";
+import { biconomy_mint_gold, mint_gold } from "../../action/action";
 import { IContext } from "../../type/blockchain";
 
 
@@ -29,7 +29,7 @@ const Gold: React.FC<Props> = ({ walletAddress, context, chainId }) => {
 
   const getBalance = async (isUpdating: boolean) => {
     const wallet = context.getBlockchain(chainId).getWallet(walletAddress).wallet;
-    const balance = await getGoldBalance(wallet.smartAccount.address, wallet.provider, context, chainId);
+    const balance = await getGoldBalance(walletAddress, wallet.provider, context, chainId);
     setCount(balance.toNumber());
     if (isUpdating) {
       toast.success('Count has been updated!', {
@@ -48,7 +48,6 @@ const Gold: React.FC<Props> = ({ walletAddress, context, chainId }) => {
 
   const self_mint = async () => {
     try {
-      const wallet = context.getBlockchain(chainId).getWallet(walletAddress).wallet;
       toast.info('Processing mint on the blockchain!', {
         position: "top-right",
         autoClose: 5000,
@@ -60,7 +59,7 @@ const Gold: React.FC<Props> = ({ walletAddress, context, chainId }) => {
         theme: "dark",
       });
 
-      const userOpResponse = await biconomy_mint_gold(1, wallet, context, chainId);
+      const userOpResponse = await mint_gold(1, walletAddress, context, chainId);
 
       toast.success(`Transaction Hash: ${userOpResponse.userOpHash}`, {
         position: "top-right",
