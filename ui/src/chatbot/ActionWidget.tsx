@@ -7,7 +7,8 @@ import {IContext} from "../type/blockchain";
 interface ActionWidgetProps {
     payload: {
         name: string,
-        arguments: string,
+        args: any,
+        action: () => void,
     },
     setContext: (context: IContext) => void,
     getContext: () => IContext,
@@ -15,12 +16,12 @@ interface ActionWidgetProps {
 
 const ActionWidget: FunctionComponent<ActionWidgetProps> = ({payload, setContext, getContext}) => {
     const processPayload = () => {
-        const args = JSON.parse(payload.arguments);
-        switch (payload.name) {
+        const {name, args, action} = payload;
+        switch (name) {
             case 'transfer':
                 return (
                     <Button
-                        onClick={() => console.log('do transfer')}
+                        onClick={() => action()}
                     >
                         {`Transfer ${args.amount} ${args.token} to ${args.address}`}
                     </Button>

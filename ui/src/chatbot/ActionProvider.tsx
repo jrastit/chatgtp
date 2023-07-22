@@ -1,6 +1,6 @@
 import React, {cloneElement, FunctionComponent, ReactElement, useRef} from 'react';
 import {IMessageOptions} from "react-chatbot-kit/src/interfaces/IMessages";
-import {mint_gold} from "../action/action";
+import {mint_gold, transfer_gold} from "../action/action";
 import {IContext} from "../type/blockchain";
 
 interface StateItem {
@@ -80,9 +80,32 @@ const ActionProvider: FunctionComponent<ActionProviderProps> = ({
                     })();
                 }
             } else if (answer.function_call.name === 'transfer') {
-                chatBotMessage.message = 'I have prepared the transaction for you, click to validate it';
-                chatBotMessage.widget = 'actionWidget';
-                chatBotMessage.payload = answer.function_call;
+                if (args.token.toUpperCase() !== 'GOLD') {
+                    chatBotMessage.message = 'I can only mint GOLD for now';
+                } else {
+                    chatBotMessage.message = 'I have prepared the transaction for you, click to validate it';
+                    chatBotMessage.widget = 'actionWidget';
+                    chatBotMessage.payload = {
+                        name: answer.function_call.name,
+                        args,
+                        action: async () => {
+                            try {
+                                await transfer_gold(args.amount, args.address, null, getContext(), 5);
+                                const callbackMessage = createChatBotMessage(`${args.amount} ${args.token} have been transferred to ${args.address}`, {delay: 0});
+                                setState((prev) => ({
+                                    ...prev,
+                                    messages: [...prev.messages, callbackMessage],
+                                }));
+                            } catch (e) {
+                                const callbackMessage = createChatBotMessage(`Error occured during transfer : ${e.message}`, {delay: 0});
+                                setState((prev) => ({
+                                    ...prev,
+                                    messages: [...prev.messages, callbackMessage],
+                                }));
+                            }
+                        },
+                    };
+                }
             }
         } else {
             chatBotMessage.message = answer.content;
