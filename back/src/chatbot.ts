@@ -11,21 +11,21 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 export const chatbot: RequestHandler = async (req, res) => {
-    const walletAssistantPrompt = fs.readFileSync('prompt/wallet-assistant.txt', 'utf-8');
-    const functions = JSON.parse(fs.readFileSync('prompt/functions.json', 'utf-8'));
-
     const messages = req.body.messages;
     console.log('================ Processing chatbot request ================');
     console.log(JSON.stringify({messages}));
+
+    const chatbotPrompt = fs.readFileSync(`prompt/prompt.txt`, 'utf-8');
+    const chatbotFunctions = JSON.parse(fs.readFileSync(`prompt/functions.json`, 'utf-8'));
 
     try {
         const chatCompletion = await openai.createChatCompletion({
             model,
             messages: [
-                {role: 'system', content: walletAssistantPrompt},
+                {role: 'system', content: chatbotPrompt},
                 ...messages,
             ],
-            functions,
+            functions: chatbotFunctions,
             function_call: 'auto',
         });
 

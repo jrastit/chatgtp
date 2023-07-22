@@ -1,5 +1,7 @@
 import React, {cloneElement, FunctionComponent, ReactElement, useRef} from 'react';
 import {IMessageOptions} from "react-chatbot-kit/src/interfaces/IMessages";
+import {mint_gold, transfer_gold} from "../action/action";
+import {IContext} from "../type/blockchain";
 
 interface StateItem {
     [key: string]: any,
@@ -9,10 +11,15 @@ interface BotState {
     messages: StateItem[]
 }
 
-interface ActionProviderProps {
+export interface ActionProviderPropsBase {
     createChatBotMessage: (message: string, options: IMessageOptions) => any,
     setState: (fun: (prev: BotState) => BotState) => void,
     children: ReactElement,
+}
+
+interface ActionProviderProps extends ActionProviderPropsBase {
+    setContext: (context: IContext) => void,
+    getContext: () => IContext,
 }
 
 export interface Actions {
@@ -28,7 +35,12 @@ interface HistoryItem {
     } | undefined,
 }
 
-const ActionProvider: FunctionComponent<ActionProviderProps> = ({createChatBotMessage, setState, children}) => {
+const ActionProvider: FunctionComponent<ActionProviderProps> = ({
+                                                                    createChatBotMessage,
+                                                                    setState,
+                                                                    getContext,
+                                                                    children
+                                                                }) => {
     const history = useRef<HistoryItem[]>([]);
 
     const handleUserMessage: Actions['handleUserMessage'] = async (message: string) => {
@@ -52,9 +64,49 @@ const ActionProvider: FunctionComponent<ActionProviderProps> = ({createChatBotMe
         history.current.push(answer);
 
         if (answer.function_call) {
-            chatBotMessage.message = 'I have prepared the transaction for you, click to validate it';
-            chatBotMessage.widget = 'actionWidget';
-            chatBotMessage.payload = answer.function_call;
+            const args = JSON.parse(answer.function_call.arguments);
+            if (answer.function_call.name === 'mint') {
+                if (args.token.toUpperCase() !== 'GOLD') {
+                    chatBotMessage.message = 'I can only mint GOLD for now';
+                } else {
+                    chatBotMessage.message = `Mint in progress...`;
+                    (async () => {
+                        await mint_gold(args.amount, null, getContext(), 5);
+                        const callbackMessage = createChatBotMessage(`${args.amount} ${args.token} have been minted in your wallet`, {delay: 0});
+                        setState((prev) => ({
+                            ...prev,
+                            messages: [...prev.messages, callbackMessage],
+                        }));
+                    })();
+                }
+            } else if (answer.function_call.name === 'transfer') {
+                if (args.token.toUpperCase() !== 'GOLD') {
+                    chatBotMessage.message = 'I can only mint GOLD for now';
+                } else {
+                    chatBotMessage.message = 'I have prepared the transaction for you, click to validate it';
+                    chatBotMessage.widget = 'actionWidget';
+                    chatBotMessage.payload = {
+                        name: answer.function_call.name,
+                        args,
+                        action: async () => {
+                            try {
+                                await transfer_gold(args.amount, args.address, null, getContext(), 5);
+                                const callbackMessage = createChatBotMessage(`${args.amount} ${args.token} have been transferred to ${args.address}`, {delay: 0});
+                                setState((prev) => ({
+                                    ...prev,
+                                    messages: [...prev.messages, callbackMessage],
+                                }));
+                            } catch (e) {
+                                const callbackMessage = createChatBotMessage(`Error occured during transfer : ${e.message}`, {delay: 0});
+                                setState((prev) => ({
+                                    ...prev,
+                                    messages: [...prev.messages, callbackMessage],
+                                }));
+                            }
+                        },
+                    };
+                }
+            }
         } else {
             chatBotMessage.message = answer.content;
         }

@@ -1,12 +1,13 @@
 [
   {
     "name": "transfer",
+    "description": "Send crypto assets to an address",
     "parameters": {
       "type": "object",
       "properties": {
         "address": {
           "type": "string",
-          "description": "The transfer destination address, eg vitalik.eth"
+          "description": "The transfer destination address, it must be a valid wallet address or an ENS name"
         },
         "amount": {
           "type": "number",
@@ -17,20 +18,32 @@
           "description": "The token symbol eg ETH"
         }
       },
-      "required": ["address", "amount", "token"]
+      "required": [
+        "address",
+        "amount",
+        "token"
+      ]
     }
   },
   {
-    "name": "showWallet",
+    "name": "mint",
+    "description": "Mint token in the wallet",
     "parameters": {
       "type": "object",
       "properties": {
-        "address": {
+        "amount": {
+          "type": "number",
+          "description": "The amount to mint, eg 3.5"
+        },
+        "token": {
           "type": "string",
-          "description": "The transfer destination address, eg vitalik.eth"
+          "description": "The token symbol eg ETH"
         }
       },
-      "required": ["address", "amount", "token"]
+      "required": [
+        "amount",
+        "token"
+      ]
     }
   }
 ]

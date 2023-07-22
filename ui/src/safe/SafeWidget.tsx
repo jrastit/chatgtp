@@ -1,34 +1,28 @@
-import { Button } from "react-bootstrap"
-import { web3AuthModalPack } from "./safe"
-import { useState } from "react";
-import { ethers } from 'ethers'
-import { EthersAdapter } from '@safe-global/protocol-kit'
+import {Button} from "react-bootstrap"
+import {web3AuthModalPack} from "./safe"
+import {useState} from "react";
+import {ethers} from 'ethers'
+import {EthersAdapter, SafeAccountConfig, SafeFactory} from '@safe-global/protocol-kit'
 import AccountAbstraction from '@safe-global/account-abstraction-kit-poc'
-import { GelatoRelayPack } from '@safe-global/relay-kit'
-
-import { SafeFactory } from '@safe-global/protocol-kit'
-import { SafeAccountConfig } from '@safe-global/protocol-kit'
+import {GelatoRelayPack} from '@safe-global/relay-kit'
 
 
-
-
-const SafeWidget= () => {
-
+const SafeWidget = () => {
     const [authKitSignData, setAuthKitSignData] = useState<any>(null)
     const [signer, setSigner] = useState<any>(null)
     const [safeSelected, setSafeSelected] = useState<string | null>(null)
-    
+
     const openSafe = async () => {
         const authKitSignData = await web3AuthModalPack.signIn()
-        setAuthKitSignData(authKitSignData)    
+        setAuthKitSignData(authKitSignData)
         if (authKitSignData.safes && authKitSignData.safes.length === 0) {
             const safes = authKitSignData.safes
 
-            const provider= web3AuthModalPack.getProvider()
+            const provider = web3AuthModalPack.getProvider()
 
-            if (provider){
+            if (provider) {
                 const web3Provider = new ethers.providers.Web3Provider(provider)
-            
+
                 const signer = web3Provider.getSigner()
 
                 setSigner(signer)
@@ -36,7 +30,7 @@ const SafeWidget= () => {
                 const relayPack = new GelatoRelayPack()
                 const safeAccountAbstraction = new AccountAbstraction(signer)
 
-                await safeAccountAbstraction.init({ relayPack })
+                await safeAccountAbstraction.init({relayPack})
 
                 const hasSafes = safes.length > 0
 
@@ -44,14 +38,14 @@ const SafeWidget= () => {
 
                 setSafeSelected(safeSelected)
 
-                
+
             }
 
         }
     }
 
     const createSafe = async () => {
-        if (signer && safeSelected){
+        if (signer && safeSelected) {
             const ethAdapter = new EthersAdapter({
                 ethers,
                 signerOrProvider: signer,
@@ -63,8 +57,8 @@ const SafeWidget= () => {
             })
             */
 
-            const safeFactory = await SafeFactory.create({ ethAdapter })
-            
+            const safeFactory = await SafeFactory.create({ethAdapter})
+
 
             const safeAccountConfig: SafeAccountConfig = {
                 owners: [
@@ -76,7 +70,7 @@ const SafeWidget= () => {
 
             /* This Safe is tied to owner 1 because the factory was initialized with
             an adapter that had owner 1 as the signer. */
-            const safeSdkOwner1 = await safeFactory.deploySafe({ safeAccountConfig })
+            const safeSdkOwner1 = await safeFactory.deploySafe({safeAccountConfig})
 
             const safeAddress = await safeSdkOwner1.getAddress()
 
@@ -84,7 +78,7 @@ const SafeWidget= () => {
             console.log(`https://goerli.etherscan.io/address/${safeAddress}`)
             console.log(`https://app.safe.global/gor:${safeAddress}`)
         }
-        
+
     }
 
     const closeSafe = async () => {
@@ -95,33 +89,9 @@ const SafeWidget= () => {
 
     return (
         <div>
-            <h3>Safe Modular Abstarct Accounts</h3>
             {!authKitSignData &&
-                <Button onClick={() => openSafe()}>Login</Button>
+                <Button onClick={() => openSafe()}>Login with Safe</Button>
             }
-            <p/>
-            {!!authKitSignData &&
-                <Button onClick={() => closeSafe()}>Logout</Button>
-            }
-            <p/>
-            {!!signer && !! safeSelected &&
-                <Button onClick={() => createSafe()}>Create Safe</Button>
-            }
-            <p/>
-            {authKitSignData && authKitSignData.safes && authKitSignData.safes.map((safe: any) => {
-                return (
-                    <div key={safe}>
-                        <p>Safe Address: {safe}</p>
-                    </div>
-                )
-            })}
-            <p/>
-            {safeSelected && (
-                <div>
-                    <p>Safe Selected: {safeSelected}</p>
-                </div>    
-            )}
-
         </div>
     );
 };
