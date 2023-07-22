@@ -2071,6 +2071,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@chakra-ui/icons@npm:2.1.0":
+  version: 2.1.0
+  resolution: "@chakra-ui/icons@npm:2.1.0"
+  dependencies:
+    "@chakra-ui/icon": 3.1.0
+  peerDependencies:
+    "@chakra-ui/system": ">=2.0.0"
+    react: ">=18"
+  checksum: 123b98349cc4d78572c366640dd865d12af0037a9ac1175cd09fb0025dcee4f51a6c7006c8561487611fc79722fa95b94b691edda494384bb9d67eedca64d7de
+  languageName: node
+  linkType: hard
+
 "@chakra-ui/image@npm:2.1.0":
   version: 2.1.0
   resolution: "@chakra-ui/image@npm:2.1.0"
@@ -20857,6 +20869,7 @@ __metadata:
     "@biconomy/node-client": 3.0.0-alpha.0
     "@biconomy/paymaster": 3.0.0-alpha.0
     "@biconomy/web3-auth": 3.0.0-alpha.0
+    "@chakra-ui/icons": 2.1.0
     "@esbuild-plugins/node-globals-polyfill": 0.2.3
     "@safe-global/account-abstraction-kit-poc": 1.2.0
     "@safe-global/auth-kit": 1.2.0

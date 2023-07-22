@@ -133,12 +133,11 @@ function Graph({initialNodes, initialEdges}: GraphProps) {
         if (edges.find(e=> e.className==="temp")) {
             onOpen();
         }
-        onOpen();
         
       
       
     },
-    [getClosestEdge]
+    [getClosestEdge, edges]
   );
 
   useEffect(()=> {
@@ -193,7 +192,7 @@ function Graph({initialNodes, initialEdges}: GraphProps) {
     
    
     return (
-        <Box width="100%">
+        <Box width="100%" height="100%">
 
             <ReactFlow style={reactFlowStyle} 
             nodes={nodes}

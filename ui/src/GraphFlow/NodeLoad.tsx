@@ -17,7 +17,7 @@ function NodeLoad({ isConnectable} : NodeLoaderProps) {
   return (
     <Box style={{
         borderRadius: '100%',
-        backgroundColor: '#fff',
+        backgroundColor: 'white',
         width: 50,
         height: 50,
         display: 'flex',
@@ -31,7 +31,7 @@ function NodeLoad({ isConnectable} : NodeLoaderProps) {
         position={Position.Top}
         isConnectable={isConnectable}
       /> */}
-      <Spinner />
+      <Spinner color='black' />
       <Handle
         id={`handle-target`} // Set a unique ID for the target handle if needed
         type="target"

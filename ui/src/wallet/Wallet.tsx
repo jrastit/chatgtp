@@ -2,6 +2,7 @@ import {gql, useQuery} from '@apollo/client';
 import {FunctionComponent, useState} from "react";
 import GraphFlow from '../GraphFlow/GraphFlow';
 import nodeDefaults from '../GraphFlow/NodeTypeDefault';
+import { Box, Spinner, useToast } from '@chakra-ui/react';
 
 const listTokensQuery = gql`
     query MyQuery($owner: Identity) {
@@ -48,6 +49,7 @@ interface TokenListResultType {
 }
 
 const Wallet: FunctionComponent = () => {
+    const toast = useToast()
     const [owner /*, setOwner*/] = useState('jrastit.eth')
     const {loading, error, data} = useQuery<TokenListResultType>(listTokensQuery, {
         variables: {
@@ -56,9 +58,29 @@ const Wallet: FunctionComponent = () => {
     });
 
     if (loading) {
-        return 'Loading...';
+        // return 'Loading...';
+        return (
+            <>
+            <Box
+            width="100%"
+            height="300px" // Ensure the height value is specified in pixels, e.g., '300px'
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            >
+                <Spinner />
+            </Box>
+            </>
+        )
     } else if (error) {
-        return `Error! ${error.message}`;
+        // return `Error! ${error.message}`;
+        toast({
+            title: "Error when loading",
+            description: `Error! ${error.message}`,
+            status: "error",
+            duration: 9000,
+            isClosable: true,
+        })
     } else if (data) {
         const nodes = [{
             id:'0',
@@ -138,7 +160,7 @@ const Wallet: FunctionComponent = () => {
         
         return (
             
-            <>
+            <Box width="80%" style={{backgroundColor:"white"}} height="500px" marginInline="auto">
                 <GraphFlow initialEdges={edges ? edges : []} initialNodes={nodes} />
                 {/* <h1>Ethereum</h1>
                 <table>
@@ -162,11 +184,17 @@ const Wallet: FunctionComponent = () => {
                     ))}
                     </tbody>
                 </table> */}
-            </>
+            </Box>
             
         )
     } else {
-        return "No data!";
+        toast({
+            title: "Error: No data",
+            description: `Error! no data`,
+            status: "error",
+            duration: 9000,
+            isClosable: true,
+        })
     }
 };
 

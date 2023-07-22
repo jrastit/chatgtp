@@ -24,6 +24,7 @@
     "@biconomy/node-client": "3.0.0-alpha.0",
     "@biconomy/paymaster": "3.0.0-alpha.0",
     "@biconomy/web3-auth": "3.0.0-alpha.0",
+    "@chakra-ui/icons": "2.1.0",
     "@esbuild-plugins/node-globals-polyfill": "0.2.3",
     "@safe-global/account-abstraction-kit-poc": "1.2.0",
     "@safe-global/auth-kit": "1.2.0",

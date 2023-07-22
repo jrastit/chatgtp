@@ -1,10 +1,11 @@
 import {FunctionComponent} from "react";
 import Wallet from "./wallet/Wallet";
 import MyChatbot from "./chatbot/MyChatbot";
+import {ChatIcon} from '@chakra-ui/icons'
 import SafeWidget from './safe/SafeWidget';
 import Biconomy from "./biconomy/Biconomy";
 
-import {  Box, ChakraProvider } from "@chakra-ui/react";
+import {  Box, Button, ChakraProvider, Stack, useDisclosure } from "@chakra-ui/react";
 
 // const nodeDefaults = {
 //     // sourceposition: Position.Right,  
@@ -52,23 +53,43 @@ import {  Box, ChakraProvider } from "@chakra-ui/react";
 // ]
 
 const App: FunctionComponent = () => {
+    const { isOpen, onOpen, onClose } = useDisclosure();
     return (
         <>
         <ChakraProvider>
-            <Box display="flex">
-                <SafeWidget/>
-                <p/>
+            <Stack>
+                
+                
                 <Biconomy></Biconomy>
-                <p/>
-                <MyChatbot/>
                 
-                {/* <GraphFlow initialEdges={edges} initialNodes={nodes} /> */}
+                
+                <Box display="flex" justifyContent="space-around" alignContent="center">
+                <SafeWidget/>
+                <Button colorScheme='blue' width="fit-content" onClick={isOpen ? onClose : onOpen} leftIcon={<ChatIcon />}>{isOpen ? "Close Chatbot" : "Open Chatbot"}</Button> 
             
-                <p/>
-                <Wallet/>
-                <p/>
-                
+            
+            
                 </Box>
+                {/* <GraphFlow initialEdges={edges} initialNodes={nodes} /> */}
+                <Stack spacing={4} >
+                
+                <Wallet/>
+                
+
+                {isOpen && (<Box 
+                position="fixed"
+                bottom="10px"
+                right="0"
+                width="fit-content" 
+                paddingLeft="30px"
+                >
+                    <MyChatbot />
+                    </Box>
+                )}
+                </Stack>
+                
+            </Stack>
+            
         </ChakraProvider>
         </>
     );

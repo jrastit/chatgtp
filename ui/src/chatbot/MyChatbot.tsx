@@ -9,14 +9,18 @@ const config = {
 };
 
 const MyChatbot= () => {
+    
     return (
-        <div>
+        <>
             <Chatbot
-                config={config}
-                messageParser={MessageParser}
-                actionProvider={ActionProvider}
-            />
-        </div>
+                    config={config}
+                    messageParser={MessageParser}
+                    actionProvider={ActionProvider}
+                    />
+
+        
+        </>
+        
     );
 };
 
