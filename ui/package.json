@@ -17,6 +17,7 @@
   ],
   "dependencies": {
     "@apollo/client": "3.7.17",
+    "@safe-global/account-abstraction-kit-poc": "1.2.0",
     "@safe-global/auth-kit": "1.2.0",
     "@web3auth/base": "6.1.4",
     "@web3auth/modal": "6.1.5",
