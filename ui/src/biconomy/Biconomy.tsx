@@ -1,4 +1,4 @@
-import "@Biconomy/web3-auth/dist/src/style.css"
+import '@biconomy/web3-auth/dist/src/style.css'
 import { useState, useEffect, useRef } from 'react'
 import SocialLogin from "@biconomy/web3-auth"
 import { ChainId } from "@biconomy/core-types";
