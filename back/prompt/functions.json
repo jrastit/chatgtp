@@ -1,0 +1,36 @@
+[
+  {
+    "name": "transfer",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string",
+          "description": "The transfer destination address, eg vitalik.eth"
+        },
+        "amount": {
+          "type": "number",
+          "description": "The amount to transfer, eg 3.5"
+        },
+        "token": {
+          "type": "string",
+          "description": "The token symbol eg ETH"
+        }
+      },
+      "required": ["address", "amount", "token"]
+    }
+  },
+  {
+    "name": "showWallet",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string",
+          "description": "The transfer destination address, eg vitalik.eth"
+        }
+      },
+      "required": ["address", "amount", "token"]
+    }
+  }
+]

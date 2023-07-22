@@ -19,8 +19,17 @@ export interface Actions {
     handleUserMessage: (message: string) => Promise<void>;
 }
 
+interface HistoryItem {
+    role: string,
+    content: string | null,
+    function_call?: {
+        name: string,
+        arguments: string,
+    } | undefined,
+}
+
 const ActionProvider: FunctionComponent<ActionProviderProps> = ({createChatBotMessage, setState, children}) => {
-    const history = useRef<{ role: string, content: string }[]>([]);
+    const history = useRef<HistoryItem[]>([]);
 
     const handleUserMessage: Actions['handleUserMessage'] = async (message: string) => {
         history.current.push({role: 'user', content: message});
@@ -39,10 +48,14 @@ const ActionProvider: FunctionComponent<ActionProviderProps> = ({createChatBotMe
                 messages: history.current,
             }),
         });
-        const {answer} = (await botResponse.json()) as { answer: string };
-        history.current.push({role: 'assistant', content: answer});
-        console.log(answer);
-        chatBotMessage.message = answer;
+        const {answer} = (await botResponse.json()) as { answer: HistoryItem };
+        history.current.push(answer);
+
+        if (answer.function_call) {
+            chatBotMessage.message = 'Function call';
+        } else {
+            chatBotMessage.message = answer.content;
+        }
         setState((prev) => ({...prev}));
     };
 
