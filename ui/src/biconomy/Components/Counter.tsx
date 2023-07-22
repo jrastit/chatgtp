@@ -5,16 +5,24 @@ import abi from "../utils/erc20Abi.json";
 import { ethers } from "ethers";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { IPaymaster, BiconomyPaymaster,} from '@biconomy/paymaster'
 
 
 interface Props {
-  smartAccount: any
+  smartAccount: BiconomySmartAccount
   provider: any
 }
 
 const TotalCountDisplay: React.FC<{ count: number }> = ({ count }) => {
   return <div>Total count is {count}</div>;
 };
+
+
+  let paymasterServiceData: SponsorUserOperationDto = {
+    mode: PaymasterMode.SPONSORED,
+    // optional params...
+  };
+
 
 const Counter: React.FC<Props> = ({ smartAccount, provider }) => {
   const [count, setCount] = useState<number>(0);
@@ -25,7 +33,8 @@ const Counter: React.FC<Props> = ({ smartAccount, provider }) => {
 
   useEffect(() => {
     setIsLoading(true);
-    getCount(false);
+    const interval = setInterval(() => getCount(false), 5000);
+    return () => clearInterval(interval);
   }, []);
 
   const getCount = async (isUpdating: boolean) => {
@@ -60,8 +69,8 @@ const Counter: React.FC<Props> = ({ smartAccount, provider }) => {
         theme: "dark",
       });
 
-      const incrementTx = new ethers.utils.Interface(["function self_mint()"]);
-      const data = incrementTx.encodeFunctionData("self_mint");
+      const contract = new ethers.Contract(counterAddress, abi.output.abi, provider);
+      const data = contract.interface.encodeFunctionData("self_mint", [1]);
 
       const tx1 = {
         to: counterAddress,
@@ -70,17 +79,14 @@ const Counter: React.FC<Props> = ({ smartAccount, provider }) => {
 
       let partialUserOp = await smartAccount.buildUserOp([tx1]);
 
-      const biconomyPaymaster = smartAccount.paymaster as IHybridPaymaster<SponsorUserOperationDto>;
-
-      let paymasterServiceData: SponsorUserOperationDto = {
-        mode: PaymasterMode.SPONSORED,
-        // optional params...
-      };
 
       try {
+        console.log("Partial User Op:", partialUserOp);
+
+         const biconomyPaymaster = smartAccount.paymaster as IHybridPaymaster<SponsorUserOperationDto>;
         const paymasterAndDataResponse = await biconomyPaymaster.getPaymasterAndData(partialUserOp, paymasterServiceData);
         partialUserOp.paymasterAndData = paymasterAndDataResponse.paymasterAndData;
-
+        console.log("Paymaster and data:", paymasterAndDataResponse.paymasterAndData);
         const userOpResponse = await smartAccount.sendUserOp(partialUserOp);
         const transactionDetails = await userOpResponse.wait();
 

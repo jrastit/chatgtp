@@ -12,12 +12,12 @@ import styles from '@/styles/Home.module.css'
 
 const bundler: IBundler = new Bundler({
   bundlerUrl: 'https://bundler.biconomy.io/api/v2/5/abc', // you can get this value from biconomy dashboard.     
-  chainId: ChainId.POLYGON_MUMBAI,
+  chainId: ChainId.GOERLI,
   entryPointAddress: DEFAULT_ENTRYPOINT_ADDRESS,
 })
 
 const paymaster: IPaymaster = new BiconomyPaymaster({
-  paymasterUrl: 'https://paymaster.biconomy.io/api/v1/80001/cIhIeS-I0.7e1f17b1-6ebb-454c-8499-c5f66dd098c6' 
+  paymasterUrl: 'https://paymaster.biconomy.io/api/v1/5/vVbbCsVEp.14ff71ef-c84f-4684-ae2e-2d5a8adf5877' 
 })
 
 export default function Biconomy() {
@@ -44,7 +44,7 @@ export default function Biconomy() {
       const socialLoginSDK = new SocialLogin()
       const signature1 = await socialLoginSDK.whitelistUrl("http://127.0.0.1:5173/")
       await socialLoginSDK.init({
-        chainId: ethers.utils.hexValue(ChainId.POLYGON_MUMBAI).toString(),
+        chainId: ethers.utils.hexValue(ChainId.GOERLI).toString(),
         network: "testnet",
         whitelistUrls: {
           "http://127.0.0.1:5173/": signature1,
