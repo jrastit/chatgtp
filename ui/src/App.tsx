@@ -6,7 +6,7 @@ import SafeWidget from './safe/SafeWidget';
 import Biconomy from "./biconomy/Biconomy";
 
 import {  Box, Button, ChakraProvider, Stack, useDisclosure } from "@chakra-ui/react";
-import { IBlockchain, IContext } from "./type/blockchain";
+import { IBlockchain, IContext, IContract } from "./type/blockchain";
 
 // const nodeDefaults = {
 //     // sourceposition: Position.Right,  
@@ -55,9 +55,11 @@ import { IBlockchain, IContext } from "./type/blockchain";
 
 const App: FunctionComponent = () => {
     const [context, setContext] = useState<IContext>(new IContext([
-        new IBlockchain(1, "Ethereum", []),
-        new IBlockchain(5, "Goerli", [], true),
-        new IBlockchain(137, "Polygon", []),
+        new IBlockchain(1, "Ethereum"),
+        new IBlockchain(5, "Goerli", true, [], [
+            new IContract('0x813CE0d67d7a7534d26300E547C4B66a9B855A45', 'Gold')
+        ]),
+        new IBlockchain(137, "Polygon"),
     ]))
 
     const { isOpen, onOpen, onClose } = useDisclosure();

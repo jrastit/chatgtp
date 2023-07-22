@@ -3,6 +3,7 @@ import {  IHybridPaymaster,SponsorUserOperationDto, PaymasterMode,} from '@bicon
 import abi from "../utils/erc20Abi.json";
 import { ethers } from "ethers";
 import 'react-toastify/dist/ReactToastify.css';
+import { IContext, IBiconomy } from '../type/blockchain';
 
 const goldAddress = '0x813CE0d67d7a7534d26300E547C4B66a9B855A45';
 
@@ -11,8 +12,9 @@ let paymasterServiceData: SponsorUserOperationDto = {
     // optional params...
   };
 
-export const biconomy_mint_gold = async (amount: number, provider: any, smartAccount: any) => {
-    const contract = new ethers.Contract(goldAddress, abi.output.abi, provider);
+export const biconomy_mint_gold = async (amount: number, bic : IBiconomy, context: IContext, chainId: number) => {
+    const goldAddress = context.getBlockchain(chainId).getContract('Gold').address;
+    const contract = new ethers.Contract(goldAddress, abi.output.abi, bic.provider);
       const data = contract.interface.encodeFunctionData("self_mint", [1]);
 
       const tx1 = {
@@ -20,17 +22,17 @@ export const biconomy_mint_gold = async (amount: number, provider: any, smartAcc
         data: data,
       };
 
-      let partialUserOp = await smartAccount.buildUserOp([tx1]);
+      let partialUserOp = await bic.smartAccount.buildUserOp([tx1]);
 
 
       try {
         console.log("Partial User Op:", partialUserOp);
 
-        const biconomyPaymaster = smartAccount.paymaster as IHybridPaymaster<SponsorUserOperationDto>;
+        const biconomyPaymaster = bic.smartAccount.paymaster as IHybridPaymaster<SponsorUserOperationDto>;
         const paymasterAndDataResponse = await biconomyPaymaster.getPaymasterAndData(partialUserOp, paymasterServiceData);
         partialUserOp.paymasterAndData = paymasterAndDataResponse.paymasterAndData;
         console.log("Paymaster and data:", paymasterAndDataResponse.paymasterAndData);
-        const userOpResponse = await smartAccount.sendUserOp(partialUserOp);
+        const userOpResponse = await bic.smartAccount.sendUserOp(partialUserOp);
         const transactionDetails = await userOpResponse.wait();
 
         console.log("Transaction Details:", transactionDetails);

@@ -6,7 +6,7 @@ import { IBundler, Bundler } from '@biconomy/bundler'
 import { BiconomySmartAccount,BiconomySmartAccountConfig, DEFAULT_ENTRYPOINT_ADDRESS } from "@biconomy/account"
 import { IPaymaster, BiconomyPaymaster,} from '@biconomy/paymaster'
 import Gold from './Components/Gold';
-import { IContext } from '../type/blockchain';
+import { IBiconomy, IContext, IWallet } from '../type/blockchain';
 import { Button } from 'react-bootstrap';
 
 interface Props {
@@ -17,11 +17,9 @@ interface Props {
 
 const Biconomy: React.FC<Props> = (
   {context, chainId, setContext}) => {
-  const [smartAccount, setSmartAccount] = useState<any>(null)
   const [interval, enableInterval] = useState(false)
   const sdkRef = useRef<SocialLogin | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
-  const [provider, setProvider] = useState<any>(null);
 
   const bundler: IBundler = new Bundler({
     bundlerUrl: 'https://bundler.biconomy.io/api/v2/'+chainId+'/abc', // you can get this value from biconomy dashboard.     
@@ -73,7 +71,6 @@ const Biconomy: React.FC<Props> = (
     const web3Provider = new ethers.providers.Web3Provider(
       sdkRef.current.provider
     )
-    setProvider(web3Provider)
     
     try {
       const biconomySmartAccountConfig: BiconomySmartAccountConfig = {
@@ -82,13 +79,17 @@ const Biconomy: React.FC<Props> = (
         bundler: bundler,
         paymaster: paymaster
       }
-      let biconomySmartAccount = new BiconomySmartAccount(biconomySmartAccountConfig)
+      let biconomySmartAccount : any = new BiconomySmartAccount(biconomySmartAccountConfig)
       biconomySmartAccount =  await biconomySmartAccount.init()
       console.log("owner: ", biconomySmartAccount.owner)
       console.log("address: ", await biconomySmartAccount.getSmartAccountAddress())
       console.log("deployed: ", await biconomySmartAccount.isAccountDeployed( await biconomySmartAccount.getSmartAccountAddress()))
 
-      setSmartAccount(biconomySmartAccount)
+      context.getBlockchain(chainId).walletList.push(new IWallet(biconomySmartAccount.address, "Biconomy", {
+        smartAccount: biconomySmartAccount,
+        provider: web3Provider,
+      }))
+      setContext(context)
       setLoading(false)
     } catch (err) {
       console.log('error setting up smart account... ', err)
@@ -102,25 +103,36 @@ const Biconomy: React.FC<Props> = (
     }
     await sdkRef.current.logout()
     sdkRef.current.hideWallet()
-    setSmartAccount(null)
+    const wallet = context.getBlockchain(chainId).getWalletByType("Biconomy")
+    context.getBlockchain(chainId).walletList = context.getBlockchain(chainId).walletList.filter((w) => w.address !== wallet?.address)
+    setContext(context)
     enableInterval(false)
   }
+  
+  let biconomyWallet = null
+  let walletAddress = null
+  try {
+    biconomyWallet = context.getBlockchain(chainId).getWalletByType("Biconomy")
+    walletAddress = biconomyWallet.address
+  } catch (error) {
+
+  }
+  
 
   return (
     <div>
       <h3>Biconomy Smart Accounts</h3>
-
       {
-        !smartAccount && !loading && <Button onClick={login}>Login</Button>
+        !biconomyWallet && !loading && <Button onClick={login}>Login</Button>
       }
       {
         loading && <p>Loading account details...</p>
       }
       {
-        !!smartAccount && (
+        !!walletAddress && (
           <div className="buttonWrapper">
-            <p>{smartAccount.address}</p>
-            <p><Gold smartAccount={smartAccount} provider={provider} /></p>
+            <p>{walletAddress}</p>
+            <p><Gold walletAddress={walletAddress} context={context} chainId={chainId}/></p>
             <p><Button onClick={logout}>Logout</Button></p>
           </div>
         )

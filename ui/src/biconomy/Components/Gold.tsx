@@ -3,11 +3,13 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { getGoldBalance } from "../../action/view";
 import { biconomy_mint_gold } from "../../action/action";
+import { IContext } from "../../type/blockchain";
 
 
 interface Props {
-  smartAccount: any
-  provider: any
+  walletAddress: string
+  context: IContext
+  chainId: number
 }
 
 const TotalCountDisplay: React.FC<{ count: number }> = ({ count }) => {
@@ -15,7 +17,7 @@ const TotalCountDisplay: React.FC<{ count: number }> = ({ count }) => {
 };
 
 
-const Gold: React.FC<Props> = ({ smartAccount, provider }) => {
+const Gold: React.FC<Props> = ({ walletAddress, context, chainId }) => {
   const [count, setCount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -26,7 +28,8 @@ const Gold: React.FC<Props> = ({ smartAccount, provider }) => {
   }, []);
 
   const getBalance = async (isUpdating: boolean) => {
-    const balance = await getGoldBalance(smartAccount.address, provider);
+    const wallet = context.getBlockchain(chainId).getWallet(walletAddress).wallet;
+    const balance = await getGoldBalance(wallet.smartAccount.address, wallet.provider, context, chainId);
     setCount(balance.toNumber());
     if (isUpdating) {
       toast.success('Count has been updated!', {
@@ -45,6 +48,7 @@ const Gold: React.FC<Props> = ({ smartAccount, provider }) => {
 
   const self_mint = async () => {
     try {
+      const wallet = context.getBlockchain(chainId).getWallet(walletAddress).wallet;
       toast.info('Processing mint on the blockchain!', {
         position: "top-right",
         autoClose: 5000,
@@ -56,7 +60,7 @@ const Gold: React.FC<Props> = ({ smartAccount, provider }) => {
         theme: "dark",
       });
 
-      const userOpResponse = await biconomy_mint_gold(1, provider, smartAccount);
+      const userOpResponse = await biconomy_mint_gold(1, wallet, context, chainId);
 
       toast.success(`Transaction Hash: ${userOpResponse.userOpHash}`, {
         position: "top-right",
