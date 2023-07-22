@@ -72,10 +72,10 @@ interface TokenListResultType {
 }
 
 interface WalletProps {
-    IContext: IContext
+    context: IContext
 }
 
-function Wallet ({IContext}: WalletProps) {
+function Wallet ({context}: WalletProps) {
     const toast = useToast()
     // const [context, setContext] = useState<IContext>(IContext);
     

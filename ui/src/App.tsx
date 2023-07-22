@@ -64,8 +64,7 @@ const App: FunctionComponent = () => {
             new IContract('0x813CE0d67d7a7534d26300E547C4B66a9B855A45', 'Chainlink_to_mumbai'),
             new IContract('0x83F3596A3Fa94Cf2eEB90622d514d185383E8836', 'Gold'),
         ]),
-        new IBlockchain(80001, "Mumbai", true, [], [
-        ]),
+        new IBlockchain(80001, "Mumbai", true, [], []),
         new IBlockchain(137, "Polygon"),
         new IBlockchain(100, "Gnosis"),
         new IBlockchain(1101, "Polygon zkEVM"),
@@ -80,16 +79,16 @@ const App: FunctionComponent = () => {
             <Box display="flex" justifyContent="space-around" alignContent="center" pt="2px">
                 <Biconomy context={context} chainId={5} setContext={setContext}></Biconomy>
                 <SafeWidget/>
-                <Button colorScheme='blue' width="fit-content" onClick={isOpen ? onClose : onOpen} leftIcon={<ChatIcon />}>{!isOpen ? "Close Chatbot" : "Open Chatbot"}</Button> 
-            
-            
-            
-                </Box>
+                <Button colorScheme='blue' width="fit-content" onClick={isOpen ? onClose : onOpen}
+                        leftIcon={<ChatIcon/>}>{!isOpen ? "Close Chatbot" : "Open Chatbot"}</Button>
+
+
+            </Box>
             <Stack pt="2rem">
                 {/* <GraphFlow initialEdges={edges} initialNodes={nodes} /> */}
                 <Stack spacing={4}>
 
-                    <Wallet IContext={context}/>
+                    <Wallet context={context}/>
 
                     <Box
                         position="fixed"
