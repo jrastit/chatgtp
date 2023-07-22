@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "@pushprotocol/restapi": "^1.4.3",
+    "@web3-react/core": "^8.2.0",
+    "@web3-react/injected-connector": "^6.0.7",
+    "dotenv": "^16.3.1",
+    "ethers": "5.6.9",
+    "styled-components": "^6.0.5"
+  },
+  "type": "module"
+}
