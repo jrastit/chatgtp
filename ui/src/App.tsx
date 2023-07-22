@@ -2,6 +2,7 @@ import {FunctionComponent} from "react";
 import Wallet from "./wallet/Wallet";
 import MyChatbot from "./chatbot/MyChatbot";
 import SafeWidget from './safe/SafeWidget';
+import Biconomy from "./biconomy/Biconomy";
 
 import {  Box, ChakraProvider } from "@chakra-ui/react";
 
@@ -55,6 +56,10 @@ const App: FunctionComponent = () => {
         <>
         <ChakraProvider>
             <Box display="flex">
+                <SafeWidget/>
+                <p/>
+                <Biconomy></Biconomy>
+                <p/>
                 <MyChatbot/>
                 
                 {/* <GraphFlow initialEdges={edges} initialNodes={nodes} /> */}
@@ -62,7 +67,7 @@ const App: FunctionComponent = () => {
                 <p/>
                 <Wallet/>
                 <p/>
-                <SafeWidget/>
+                
                 </Box>
         </ChakraProvider>
         </>
