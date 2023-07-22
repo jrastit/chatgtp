@@ -2,8 +2,11 @@ import {FunctionComponent, useState} from "react";
 import Wallet from "./wallet/Wallet";
 import MyChatbot from "./chatbot/MyChatbot";
 
-import {Box, ChakraProvider, Stack} from "@chakra-ui/react";
+import {Box, Button, ChakraProvider, Stack, useDisclosure} from "@chakra-ui/react";
 import {IBlockchain, IContext, IContract} from "./type/blockchain";
+import Biconomy from "./biconomy/Biconomy";
+import SafeWidget from "./safe/SafeWidget";
+import {ChatIcon} from "@chakra-ui/icons"
 
 // const nodeDefaults = {
 //     // sourceposition: Position.Right,  
@@ -51,6 +54,7 @@ import {IBlockchain, IContext, IContract} from "./type/blockchain";
 // ]
 
 const App: FunctionComponent = () => {
+    const {isOpen, onOpen, onClose} = useDisclosure();
     const [context, setContext] = useState<IContext>(new IContext([
         new IBlockchain(1, "Ethereum"),
         new IBlockchain(5, "Goerli", true, [], [
@@ -61,11 +65,19 @@ const App: FunctionComponent = () => {
 
     return (
         <ChakraProvider>
-            <Stack>
+            <Box display="flex" justifyContent="space-around" alignContent="center" pt="2px">
+                <Biconomy context={context} chainId={5} setContext={setContext}></Biconomy>
+                <SafeWidget/>
+                <Button colorScheme='blue' width="fit-content" onClick={isOpen ? onClose : onOpen} leftIcon={<ChatIcon />}>{!isOpen ? "Close Chatbot" : "Open Chatbot"}</Button> 
+            
+            
+            
+                </Box>
+            <Stack pt="2rem">
                 {/* <GraphFlow initialEdges={edges} initialNodes={nodes} /> */}
                 <Stack spacing={4}>
 
-                    <Wallet/>
+                    <Wallet IContext={context}/>
 
                     <Box
                         position="fixed"
