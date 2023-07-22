@@ -38,6 +38,7 @@ interface HistoryItem {
 const ActionProvider: FunctionComponent<ActionProviderProps> = ({
                                                                     createChatBotMessage,
                                                                     setState,
+                                                                    setContext,
                                                                     getContext,
                                                                     children
                                                                 }) => {
@@ -77,6 +78,7 @@ const ActionProvider: FunctionComponent<ActionProviderProps> = ({
                             ...prev,
                             messages: [...prev.messages, callbackMessage],
                         }));
+                        setContext(getContext());
                     })();
                 }
             } else if (answer.function_call.name === 'transfer') {
