@@ -23,6 +23,15 @@ export class IBlockchain {
         }
         return wallet
     }
+    getDefaultWallet(address: string | null): IWallet {
+        if (this.walletList.length === 0) {
+            throw new Error(`Default wallet not found`)
+        }
+        if (address) {
+            return this.getWallet(address);
+        }
+        return this.walletList[0];
+    }
     getWalletByType(type: string): IWallet {
         const wallet = this.walletList.find((wallet) => wallet.type === type);
         if (!wallet) {
