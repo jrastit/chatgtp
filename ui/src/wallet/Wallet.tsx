@@ -3,7 +3,7 @@ import {FunctionComponent, useState} from "react";
 import GraphFlow from '../GraphFlow/GraphFlow';
 import nodeDefaults from '../GraphFlow/NodeTypeDefault';
 import nodeNft from '../GraphFlow/NodeNft';
-import { Box, Spinner, useToast } from '@chakra-ui/react';
+import {Box, Spinner, useToast} from '@chakra-ui/react';
 
 const listTokensQuery = gql`
     query MyQuery($owner: Identity) {
@@ -80,22 +80,20 @@ const Wallet: FunctionComponent = () => {
     });
 
     if (loading) {
-        // return 'Loading...';
         return (
             <>
-            <Box
-            width="100%"
-            height="300px" // Ensure the height value is specified in pixels, e.g., '300px'
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            >
-                <Spinner />
-            </Box>
+                <Box
+                    width="100%"
+                    height="300px" // Ensure the height value is specified in pixels, e.g., '300px'
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                    <Spinner/>
+                </Box>
             </>
         )
     } else if (error) {
-        // return `Error! ${error.message}`;
         toast({
             title: "Error when loading",
             description: `Error! ${error.message}`,
@@ -103,6 +101,7 @@ const Wallet: FunctionComponent = () => {
             duration: 9000,
             isClosable: true,
         })
+        return undefined;
     } else if (data) {
         
         const nodes = [{
@@ -201,35 +200,10 @@ const Wallet: FunctionComponent = () => {
             }
         }
 
-        
         return (
-            
-            <Box width="80%" style={{backgroundColor:"white"}} height="500px" marginInline="auto">
-                <GraphFlow initialEdges={edges ? edges : []} initialNodes={nodes} />
-                {/* <h1>Ethereum</h1>
-                <table>
-                    <tbody>
-                    {data.EthereumBalances.TokenBalance.map((e) => (
-                        <tr>
-                            <td>{e.formattedAmount}</td>
-                            <td>{e.token.name}</td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
-                <h1>Polygon</h1>
-                <table>
-                    <tbody>
-                    {data.PolygonBalances.TokenBalance.map((e) => (
-                        <tr>
-                            <td>{e.formattedAmount}</td>
-                            <td>{e.token.name}</td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table> */}
+            <Box width="80%" style={{backgroundColor: "white"}} height="500px" marginInline="auto">
+                <GraphFlow initialEdges={edges ? edges : []} initialNodes={nodes}/>
             </Box>
-            
         )
     } else {
         toast({
@@ -239,6 +213,8 @@ const Wallet: FunctionComponent = () => {
             duration: 9000,
             isClosable: true,
         })
+
+        return undefined;
     }
 };
 
