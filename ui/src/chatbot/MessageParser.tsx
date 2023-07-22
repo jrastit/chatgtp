@@ -1,12 +1,14 @@
 import React, {cloneElement, FunctionComponent, ReactElement} from 'react';
+import {Actions} from "./ActionProvider";
 
 interface MessageParserProps {
+    actions: Actions,
     children: ReactElement,
 }
 
-const MessageParser: FunctionComponent<MessageParserProps> = ({ children }) => {
-    const parse = (message: string) => {
-        console.log(message);
+const MessageParser: FunctionComponent<MessageParserProps> = ({actions, children}) => {
+    const parse = async (message: string) => {
+        await actions.handleUserMessage(message);
     };
 
     return (
@@ -14,7 +16,7 @@ const MessageParser: FunctionComponent<MessageParserProps> = ({ children }) => {
             {React.Children.map(children, (child) => {
                 return cloneElement(child, {
                     parse: parse,
-                    actions: {},
+                    actions,
                 });
             })}
         </div>

@@ -140,54 +140,34 @@ const Wallet: FunctionComponent = () => {
 
         
         return (
+            
             <>
                 <GraphFlow initialEdges={edges ? edges : []} initialNodes={nodes} />
+                {/* <h1>Ethereum</h1>
+                <table>
+                    <tbody>
+                    {data.EthereumBalances.TokenBalance.map((e) => (
+                        <tr>
+                            <td>{e.formattedAmount}</td>
+                            <td>{e.token.name}</td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>
+                <h1>Polygon</h1>
+                <table>
+                    <tbody>
+                    {data.PolygonBalances.TokenBalance.map((e) => (
+                        <tr>
+                            <td>{e.formattedAmount}</td>
+                            <td>{e.token.name}</td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </table> */}
             </>
             
         )
-        //var count=1;
-        // if (data.EthereumBalances) {
-        //     nodes.push({
-        //         id: count.toString(),
-        //         data: { label: "Ethereum", type:"blockchain" },
-        //         position: { x: , y: 0 },
-        //         ...nodeDefaults
-        //     })
-        // }
-
-        // for (let e of data.EthereumBalances.TokenBalance) {
-        //     nodes.push({
-
-        //     })
-        // }
-
-
-        // return (
-        //     <>
-        //         <h1>Ethereum</h1>
-        //         <table>
-        //             <tbody>
-        //             {data.EthereumBalances.TokenBalance.map((e) => (
-        //                 <tr>
-        //                     <td>{e.formattedAmount}</td>
-        //                     <td>{e.token.name}</td>
-        //                 </tr>
-        //             ))}
-        //             </tbody>
-        //         </table>
-        //         <h1>Polygon</h1>
-        //         <table>
-        //             <tbody>
-        //             {data.PolygonBalances.TokenBalance.map((e) => (
-        //                 <tr>
-        //                     <td>{e.formattedAmount}</td>
-        //                     <td>{e.token.name}</td>
-        //                 </tr>
-        //             ))}
-        //             </tbody>
-        //         </table>
-        //     </>
-        // );
     } else {
         return "No data!";
     }

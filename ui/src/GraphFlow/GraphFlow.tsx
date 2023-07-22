@@ -55,7 +55,7 @@ function Graph({initialNodes, initialEdges}: GraphProps) {
 
         const closestNode:any = storeNodes.reduce(
         (res:any, n:any) => {
-            if (n?.id !== node?.id && n.data.type==="blockchain") {
+            if (n?.id !== node?.id && n.data.type==="blockchain" && node.data.type=="chain") {
             const dx = n.positionAbsolute.x - node.positionAbsolute.x;
             const dy = n.positionAbsolute.y - node.positionAbsolute.y;
             const d = Math.sqrt(dx * dx + dy * dy);
