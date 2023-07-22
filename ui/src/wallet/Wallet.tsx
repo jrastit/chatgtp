@@ -57,7 +57,6 @@ const Wallet: FunctionComponent = () => {
     });
 
     if (loading) {
-        // return 'Loading...';
         return (
             <>
                 <Box
@@ -72,7 +71,6 @@ const Wallet: FunctionComponent = () => {
             </>
         )
     } else if (error) {
-        // return `Error! ${error.message}`;
         toast({
             title: "Error when loading",
             description: `Error! ${error.message}`,
@@ -80,6 +78,7 @@ const Wallet: FunctionComponent = () => {
             duration: 9000,
             isClosable: true,
         })
+        return undefined;
     } else if (data) {
         const nodes = [{
             id: '0',
@@ -107,7 +106,6 @@ const Wallet: FunctionComponent = () => {
             })
             var count = 0
             for (let e of data.EthereumBalances.TokenBalance ?? []) {
-
                 nodes.push({
                     id: `${nodes.length}`,
                     type: "output",
@@ -139,7 +137,6 @@ const Wallet: FunctionComponent = () => {
             })
             var count = 0
             for (let e of data.EthereumBalances.TokenBalance ?? []) {
-
                 nodes.push({
                     id: `${nodes.length}`,
                     type: "output",
@@ -156,35 +153,10 @@ const Wallet: FunctionComponent = () => {
             }
         }
 
-
         return (
-
             <Box width="80%" style={{backgroundColor: "white"}} height="500px" marginInline="auto">
                 <GraphFlow initialEdges={edges ? edges : []} initialNodes={nodes}/>
-                {/* <h1>Ethereum</h1>
-                <table>
-                    <tbody>
-                    {data.EthereumBalances.TokenBalance.map((e) => (
-                        <tr>
-                            <td>{e.formattedAmount}</td>
-                            <td>{e.token.name}</td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
-                <h1>Polygon</h1>
-                <table>
-                    <tbody>
-                    {data.PolygonBalances.TokenBalance.map((e) => (
-                        <tr>
-                            <td>{e.formattedAmount}</td>
-                            <td>{e.token.name}</td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table> */}
             </Box>
-
         )
     } else {
         toast({
@@ -194,6 +166,8 @@ const Wallet: FunctionComponent = () => {
             duration: 9000,
             isClosable: true,
         })
+
+        return undefined;
     }
 };
 
