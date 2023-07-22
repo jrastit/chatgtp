@@ -49,7 +49,7 @@ interface TokenListResultType {
 
 const Wallet: FunctionComponent = () => {
     const toast = useToast()
-    const [owner /*, setOwner*/] = useState('0xe3e31735669d1682539e7041474c37a78a40edd9')
+    const [owner /*, setOwner*/] = useState('jrastit.eth')
     const {loading, error, data} = useQuery<TokenListResultType>(listTokensQuery, {
         variables: {
             owner,
