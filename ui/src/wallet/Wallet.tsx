@@ -77,8 +77,11 @@ interface WalletProps {
 
 function Wallet ({context}: WalletProps) {
     const toast = useToast()
-    // const [context, setContext] = useState<IContext>(IContext);
-    
+
+    const allWallets = context.blockchainList.flatMap((b) => b.walletList);
+    const allAddresses = allWallets.map((w) => w.address);
+    const ownerFromContext = allAddresses[0];
+
     const [owner /*, setOwner*/] = useState('jrastit.eth')
     const {loading, error, data} = useQuery<TokenListResultType>(listTokensQuery, {
         variables: {
