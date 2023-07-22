@@ -1,12 +1,9 @@
 import {FunctionComponent, useState} from "react";
 import Wallet from "./wallet/Wallet";
 import MyChatbot from "./chatbot/MyChatbot";
-import {ChatIcon} from '@chakra-ui/icons'
-import SafeWidget from './safe/SafeWidget';
-import Biconomy from "./biconomy/Biconomy";
 
-import {  Box, Button, ChakraProvider, Stack, useDisclosure } from "@chakra-ui/react";
-import { IBlockchain, IContext, IContract } from "./type/blockchain";
+import {Box, ChakraProvider, Stack} from "@chakra-ui/react";
+import {IBlockchain, IContext, IContract} from "./type/blockchain";
 
 // const nodeDefaults = {
 //     // sourceposition: Position.Right,  
@@ -34,7 +31,7 @@ import { IBlockchain, IContext, IContract } from "./type/blockchain";
 //       type: "output",
 //       data: { label: 'World', type:"chain" },
 //       position: { x: 100, y: 100 },
-      
+
 //       ...nodeDefaults
 //     },
 //     {
@@ -62,45 +59,28 @@ const App: FunctionComponent = () => {
         new IBlockchain(137, "Polygon"),
     ]))
 
-    const { isOpen, onOpen, onClose } = useDisclosure();
     return (
-        <>
         <ChakraProvider>
             <Stack>
-                
-                
-                
-                
-                <Box display="flex" justifyContent="space-around" alignContent="center">
-                <Biconomy context={context} chainId={5} setContext={setContext}></Biconomy>
-                <SafeWidget/>
-                <Button colorScheme='blue' width="fit-content" onClick={isOpen ? onClose : onOpen} leftIcon={<ChatIcon />}>{isOpen ? "Close Chatbot" : "Open Chatbot"}</Button> 
-            
-            
-            
-                </Box>
                 {/* <GraphFlow initialEdges={edges} initialNodes={nodes} /> */}
-                <Stack spacing={4} >
-                
-                <Wallet/>
-                
+                <Stack spacing={4}>
 
-                {isOpen && (<Box 
-                position="fixed"
-                bottom="10px"
-                right="0"
-                width="fit-content" 
-                paddingLeft="30px"
-                >
-                    <MyChatbot />
+                    <Wallet/>
+
+                    <Box
+                        position="fixed"
+                        bottom="10px"
+                        right="0"
+                        width="fit-content"
+                        paddingLeft="30px"
+                    >
+                        <MyChatbot setContext={setContext} getContext={() => context}/>
                     </Box>
-                )}
                 </Stack>
-                
+
             </Stack>
-            
+
         </ChakraProvider>
-        </>
     );
 }
 
