@@ -4,52 +4,51 @@ import MyChatbot from "./chatbot/MyChatbot";
 import SafeWidget from './safe/SafeWidget';
 
 import {  Box, ChakraProvider } from "@chakra-ui/react";
-import GraphFlow from "./GraphFlow/GraphFlow";
 
-const nodeDefaults = {
-    // sourceposition: Position.Right,  
-    // targetPosition: Position.Left,
-        style: {
-          borderRadius: '100%',
-          backgroundColor: '#fff',
-          width: 50,
-          height: 50,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        },
-   };
+// const nodeDefaults = {
+//     // sourceposition: Position.Right,  
+//     // targetPosition: Position.Left,
+//         style: {
+//           borderRadius: '100%',
+//           backgroundColor: '#fff',
+//           width: 50,
+//           height: 50,
+//           display: 'flex',
+//           alignItems: 'center',
+//           justifyContent: 'center',
+//         },
+//    };
 
-const nodes = [
-    {
-      id: '1',
-      data: { label: 'Hello' },
-      position: { x: 0, y: 0 },
-      ...nodeDefaults
-    },
-    {
-      id: '2',
-      type: "output",
-      data: { label: 'World', type:"chain" },
-      position: { x: 100, y: 100 },
+// const nodes = [
+//     {
+//       id: '1',
+//       data: { label: 'Hello' },
+//       position: { x: 0, y: 0 },
+//       ...nodeDefaults
+//     },
+//     {
+//       id: '2',
+//       type: "output",
+//       data: { label: 'World', type:"chain" },
+//       position: { x: 100, y: 100 },
       
-      ...nodeDefaults
-    },
-    {
-        id: '3',
-        data: { label: 'World' },
-        position: { x: 200, y: 200 },
-        ...nodeDefaults
-      },
-  ];
+//       ...nodeDefaults
+//     },
+//     {
+//         id: '3',
+//         data: { label: 'World' },
+//         position: { x: 200, y: 200 },
+//         ...nodeDefaults
+//       },
+//   ];
 
-const edges = [
-    {
-        id: '1-2',
-        source: '1',
-        target: '2',
-    },
-]
+// const edges = [
+//     {
+//         id: '1-2',
+//         source: '1',
+//         target: '2',
+//     },
+// ]
 
 const App: FunctionComponent = () => {
     return (
@@ -58,12 +57,13 @@ const App: FunctionComponent = () => {
             <Box display="flex">
                 <MyChatbot/>
                 
-                <GraphFlow initialEdges={edges} initialNodes={nodes} />
-            </Box>
-            <p/>
+                {/* <GraphFlow initialEdges={edges} initialNodes={nodes} /> */}
+            
+                <p/>
                 <Wallet/>
                 <p/>
                 <SafeWidget/>
+                </Box>
         </ChakraProvider>
         </>
     );

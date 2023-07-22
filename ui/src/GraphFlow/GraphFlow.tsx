@@ -1,5 +1,5 @@
 import { Box } from '@chakra-ui/react';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import ReactFlow, {
     addEdge,
     useNodesState,
@@ -13,12 +13,20 @@ import ReactFlow, {
 
 import 'reactflow/dist/style.css';
 
-import "./style.css"
+import "./style.css";
+import NodeLoad from './NodeLoad';
+import { Spinner } from 'react-bootstrap';
 
+interface Edges {
+    id: string
+    target: string
+    source: string
+    className: string
+}
 
 interface GraphProps {
     initialNodes: any
-    initialEdges: any
+    initialEdges: Edges[]
 }
 
 const reactFlowStyle = {
@@ -27,17 +35,18 @@ const reactFlowStyle = {
     height: 300,
   };
 
+const nodeTypes = { nodeLoader: NodeLoad };
 
 
-const MIN_DISTANCE = 150;
+const MIN_DISTANCE = 200;
 
 
 function Graph({initialNodes, initialEdges}: GraphProps) {
     
-    const [nodes, , onNodesChange] = useNodesState(initialNodes);
-    const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+    const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+    const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges ? initialEdges : []);
     const store = useStoreApi();
-    console.log(store.getState())
+
     const onConnect = useCallback((params:any) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
 
     const getClosestEdge = useCallback((node:any) => {
@@ -46,7 +55,7 @@ function Graph({initialNodes, initialEdges}: GraphProps) {
 
         const closestNode:any = storeNodes.reduce(
         (res:any, n:any) => {
-            if (n?.id !== node?.id) {
+            if (n?.id !== node?.id && n.data.type==="blockchain") {
             const dx = n.positionAbsolute.x - node.positionAbsolute.x;
             const dy = n.positionAbsolute.y - node.positionAbsolute.y;
             const d = Math.sqrt(dx * dx + dy * dy);
@@ -72,11 +81,12 @@ function Graph({initialNodes, initialEdges}: GraphProps) {
         //const closeNodeIsSource = closestNode?.node?.positionAbsolute?.x < node?.positionAbsolute?.x;
 
         return {
-        id: `${node.id}-${closestNode.node.id}`,
+        id: `${closestNode.node.id}-${node.id}`,
         // source: closeNodeIsSource ? closestNode.node.id : node.id,
         // target: closeNodeIsSource ? node.id : closestNode.node.id,
-        source: closestNode.node.id,
-        target: node.id,
+        source: `${closestNode.node.id}`,
+        target: `${node.id}`,
+        className:""
         };
     }, []);
 
@@ -84,7 +94,7 @@ function Graph({initialNodes, initialEdges}: GraphProps) {
     (_:any, node:any) => {
         const closeEdge:any = getClosestEdge(node);
 
-        const dropNode:any = nodes.find(node => closeEdge ? node.id === closeEdge.id.split('-')[0]: null)
+        
         setEdges((es) => {
             const nextEdges = es.filter((e) => e.className !== 'temp');
             
@@ -93,27 +103,17 @@ function Graph({initialNodes, initialEdges}: GraphProps) {
             closeEdge &&
             !nextEdges.find((ne) => ne.source === closeEdge.source && ne.target === closeEdge.target)
             ) {
-                if (dropNode && dropNode.data.type =="chain") {
-                    console.log(dropNode)
-                    if (nextEdges.find((ne)=>  ne.target!==dropNode.id)){
-                        nextEdges.filter((ne)=>  ne.target!==dropNode.id )
-                    } else {
-                        while(nextEdges.length > 0) {
-                            nextEdges.pop();
-                        }
-                    }
-                    
-                    console.log(nextEdges.find((ne)=>  ne.target===dropNode.id))
-                }
-        
-            closeEdge.className = 'temp';
-            nextEdges.push(closeEdge);
+    
+                
+                closeEdge.className = 'temp';
+                closeEdge.animated=true;
+                nextEdges.push(closeEdge);
             }
-
-            
 
             return nextEdges;
         });
+
+
     },
     [getClosestEdge, setEdges]
   );
@@ -122,18 +122,58 @@ function Graph({initialNodes, initialEdges}: GraphProps) {
     (_:any, node:any) => {
       const closeEdge = getClosestEdge(node);
 
-      setEdges((es) => {
-        const nextEdges = es.filter((e) => e.className !== 'temp');
+        setEdges((es) => {
+            console.log(es)
+            var nextEdges = es.filter((e) => e.className !== 'temp');
 
-        if (closeEdge) {
-          nextEdges.push(closeEdge);
-        }
+            nextEdges.map((e)=> {
+                if (e.className==='new')
+                {
+                    e.className='';
+                }
+                return e
+            })
+
+            if (closeEdge) {
+            
+                const dropNode:any = nodes.find(node => closeEdge ? node.id === closeEdge.target: null)
+    
+                if (dropNode && (dropNode.data.type ==="chain" || dropNode.data.type==="nodeLoader") && nextEdges.find((ne)=>  ne.target===dropNode.id)) {
+
+                    nextEdges = nextEdges.filter((ne)=>  ne.target!==dropNode.id )
+
+                    
+                }
+
+                closeEdge.className = 'new';
+                
+                nextEdges.push(closeEdge);
+                
+            }
 
         return nextEdges;
       });
+      
+      
     },
     [getClosestEdge]
   );
+
+  useEffect(()=> {
+    setNodes((nds) =>
+      nds.map((node) => {
+        if (edges.find((e)=> e.target===node.id && e.className=="new")) {
+            node.type="nodeLoader"
+            console.log(node)
+        }
+
+        return node;
+      })
+    );
+    
+  }, [edges]);
+    
+   
     return (
         <Box width="100%">
 
@@ -145,6 +185,9 @@ function Graph({initialNodes, initialEdges}: GraphProps) {
             onNodeDrag={onNodeDrag}
             onNodeDragStop={onNodeDragStop}
             onConnect={onConnect}
+            nodeTypes={nodeTypes}
+            fitView
+            snapToGrid
             >
             <Background variant={BackgroundVariant.Dots} gap={50}/>
             <Controls />
