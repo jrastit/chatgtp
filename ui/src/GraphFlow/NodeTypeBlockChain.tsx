@@ -17,7 +17,7 @@ function NodeBlockChain({ data, isConnectable} : NodeBlockChainProps) {
   const nodeSize=80;
   return (
     <Box style={{
-        borderRadius: '100%',
+      transform:"rotate(45deg)",
         backgroundColor: 'white',
         width: nodeSize,
         height: nodeSize,
@@ -35,7 +35,7 @@ function NodeBlockChain({ data, isConnectable} : NodeBlockChainProps) {
         style={{ top: '50%', left: '50%', transform: 'translate(-50%, -50%)',visibility: 'hidden' }}
       />
       {/* <Spinner color='black' /> */}
-      <Box>
+      <Box style={{transform:"rotate(-45deg)"}}>
       {data?.img 
       ? <img style={{borderRadius:'50%'}} src={data?.img} alt={data?.label}/>
       : <Text margin="auto" display="flex" width='30' height='30' textAlign="center" justifyContent="center" alignContent="center" color="black" fontSize="xs">{data.label}</Text>}

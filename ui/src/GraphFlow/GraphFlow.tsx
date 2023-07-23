@@ -186,7 +186,7 @@ function Graph({initialNodes, initialEdges}: GraphProps) {
         let angleBlockChain = 0;
         const Radius=150;
         const circleRadius=200;
-        const e= Math.floor(maxEdgesCount/Math.floor((2*Math.PI * circleRadius)/ (150+10)));
+        const e= Math.floor(maxEdgesCount/Math.floor((2*Math.PI * circleRadius)/ (150+50)));
         const blockchainRadius = Radius+e*110;
 
         

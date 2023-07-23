@@ -153,13 +153,13 @@ function Wallet({context}: WalletProps) {
         }];
 
         const edges = [];
-        const circleRadius = 200;
+        const circleRadius = 250;
         const e = Math.floor(Math.max(data.EthereumBalances.TokenBalance.length, data.PolygonBalances.TokenBalance.length) / Math.floor((2 * Math.PI * circleRadius) / (150 + 10)));
 
         if (data.EthereumBalances) {
             const id_eth = nodes.length;
-            const blockchainNodeX = -(150 + e * 100);
-            const blockchainNodeY = (150 + e * 100);
+            const blockchainNodeX = -(150 + e * 150);
+            const blockchainNodeY = (150 + e * 150);
             nodes.push({
                 id: `${id_eth}`,
                 type: "nodeBlockChain",
@@ -174,18 +174,18 @@ function Wallet({context}: WalletProps) {
                 style: {stroke: 'blue', strokeWidth: 2}
             })
 
-            const numNodes = Math.floor((2 * Math.PI * circleRadius) / (150 + 10));
+            const numNodes = Math.floor((2 * Math.PI * circleRadius) / (200 + 20));
             const angleBetweenWalletNodes = (Math.PI) / numNodes;
             let count = 0;
             let angle = 0;
             for (let e of data.EthereumBalances.TokenBalance) {
-                const walletNodeX = blockchainNodeX + (circleRadius + 75 * Math.floor(angle / (2 * Math.PI))) * Math.cos(angle);
-                const walletNodeY = blockchainNodeY + (circleRadius + 75 * Math.floor(angle / (2 * Math.PI))) * Math.sin(angle);
+                const walletNodeX = blockchainNodeX + (circleRadius + 110 * Math.floor(angle / (2 * Math.PI))) * Math.cos(angle);
+                const walletNodeY = blockchainNodeY + (circleRadius + 110 * Math.floor(angle / (2 * Math.PI))) * Math.sin(angle);
 
                 nodes.push({
                     id: `${nodes.length}`,
                     type: "nodeNft",
-                    data: {label: e.token.name, type: "wallet", img: e?.tokenNfts?.contentValue?.image?.extraSmall},
+                    data: {label: `${e.formattedAmount} ${e.token.name}`, type: "wallet", img: e?.tokenNfts?.contentValue?.image?.extraSmall},
                     position: {x: walletNodeX, y: walletNodeY},
                 });
                 edges.push({
@@ -216,19 +216,19 @@ function Wallet({context}: WalletProps) {
                 style: {stroke: 'blue', strokeWidth: 2}
             })
 
-            const numNodes = Math.floor((2 * Math.PI * circleRadius) / (150 + 10));
+            const numNodes = Math.floor((2 * Math.PI * circleRadius) / (200 + 20));
 
             const angleBetweenWalletNodes = (Math.PI) / numNodes;
 
             let count = 0;
             let angle = 0;
             for (let e of data?.PolygonBalances?.TokenBalance) {
-                const walletNodeX = blockchainNodeX + (circleRadius + 100 * Math.floor(angle / (2 * Math.PI))) * Math.cos(angle);
-                const walletNodeY = blockchainNodeY + (circleRadius + 100 * Math.floor(angle / (2 * Math.PI))) * Math.sin(angle);
+                const walletNodeX = blockchainNodeX + (circleRadius + 150 * Math.floor(angle / (2 * Math.PI))) * Math.cos(angle);
+                const walletNodeY = blockchainNodeY + (circleRadius + 150 * Math.floor(angle / (2 * Math.PI))) * Math.sin(angle);
                 nodes.push({
                     id: `${nodes.length}`,
                     type: "nodeNft",
-                    data: {label: e.token.name, type: "wallet", img: e?.tokenNfts?.contentValue?.image?.extraSmall},
+                    data: {label: `${e.formattedAmount} ${e.token.name}`, type: "wallet", img: e?.tokenNfts?.contentValue?.image?.extraSmall},
                     position: {x: walletNodeX, y: walletNodeY}
                 });
                 edges.push({
@@ -242,6 +242,15 @@ function Wallet({context}: WalletProps) {
             }
         }
 
+        for(let a of allAddresses){
+            const bal = (getGoldBalance(a, context, 5)).toString();
+            nodes.push({
+                id: `${nodes.length}`,
+                type: 'nodeNft',
+                data: {label: `${bal} ${allWallets.find(ad=> ad.address==a)?.type}`, type: "wallet", img: ''},
+                position: {x: nodes.length, y: nodes.length},})
+            
+        }
         return (
             <Box width="80%" style={{backgroundColor: "white"}} height="500px" marginInline="auto">
                 <GraphFlow initialEdges={edges ? edges : []} initialNodes={nodes}/>

@@ -102,7 +102,7 @@ const App: FunctionComponent = () => {
                         width="fit-content"
                         paddingLeft="30px"
                     >
-                        <MyChatbot setContext={setContext} getContext={() => context}/>
+                        {!isOpen && <MyChatbot setContext={setContext} getContext={() => context}/>}
                     </Box>
                 </Stack>
 

@@ -17,14 +17,15 @@ function NodeUser({ data, isConnectable} : NodeUserProps) {
   const nodeSize=100;
   return (
     <Box style={{
-        borderRadius: '100%',
+        
         backgroundColor: 'white',
-        width: nodeSize,
-        height: nodeSize,
+        width: "fit-content",
+        height: "fit-content",
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        overflow:"hidden"
+        overflow:"hidden",
+        padding:"1rem"
       }} border="2px" borderColor="black">
       {/* <Handle type="target" position={Position.Top} isConnectable={isConnectable} /> */}
       <Handle

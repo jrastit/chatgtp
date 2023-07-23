@@ -14,7 +14,7 @@ function NodeNft({ data, isConnectable} : NodeNftProps) {
   const onChange = useCallback((evt:any) => {
     console.log(evt.target.value);
   }, []);
-  const nodeSize=75;
+  const nodeSize=100;
   return (
     <Box style={{
          borderRadius: '50%',
