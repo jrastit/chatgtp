@@ -45,5 +45,30 @@
         "token"
       ]
     }
+  },
+  {
+    "name": "showWallet",
+    "description": "Show wallet content",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string",
+          "description": "The wallet address, it must be a valid wallet address or an ENS name"
+        }
+      },
+      "required": [
+        "address"
+      ]
+    }
+  },
+  {
+    "name": "showBalance",
+    "description": "Show the wallet balance",
+    "parameters": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
   }
 ]

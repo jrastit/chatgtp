@@ -1,5 +1,4 @@
 import {gql, useQuery} from '@apollo/client';
-import {useState} from "react";
 import GraphFlow from '../GraphFlow/GraphFlow';
 import {Box, Spinner, useToast} from '@chakra-ui/react';
 import {IContext} from '../type/blockchain';
@@ -71,7 +70,7 @@ interface TokenListResultType {
 }
 
 interface WalletProps {
-    context: IContext
+    context: IContext,
 }
 
 function Wallet({context}: WalletProps) {
@@ -89,10 +88,10 @@ function Wallet({context}: WalletProps) {
         })();
     }
 
-    const [owner /*, setOwner*/] = useState('jrastit.eth')
     const {loading, error, data} = useQuery<TokenListResultType>(listTokensQuery, {
+        skip: context.otherWalletAddress === undefined,
         variables: {
-            owner,
+            owner: context.otherWalletAddress,
         }
     });
 
@@ -101,7 +100,7 @@ function Wallet({context}: WalletProps) {
     // useEffect(()=> {
     //     context.blockchainList.map((b)=> {
     //         let data=[];
-    //         if (b.name ==="Ethereum" || b.name==="Polygone") {
+    //         if (b.name ==="Ethereum" || b.name==="Polygon") {
     //             for (let owner of b.walletList) {
 
     //             const {loading, error, data} = useQuery<TokenListResultType>(listTokensQuery, {
@@ -148,7 +147,7 @@ function Wallet({context}: WalletProps) {
         const nodes = [{
             id: '0',
             type: 'nodeUser',
-            data: {label: owner, type: "user", img: ''},
+            data: {label: context.otherWalletAddress, type: "user", img: ''},
             position: {x: 0, y: 0},
         }];
 
@@ -205,7 +204,7 @@ function Wallet({context}: WalletProps) {
             nodes.push({
                 id: `${id_poly}`,
                 type: "nodeBlockChain",
-                data: {label: "Polygone", type: "blockchain", img: ''},
+                data: {label: "Polygon", type: "blockchain", img: ''},
                 position: {x: blockchainNodeX, y: blockchainNodeY},
             })
             edges.push({
@@ -257,14 +256,6 @@ function Wallet({context}: WalletProps) {
             </Box>
         )
     } else {
-        toast({
-            title: "Error: No data",
-            description: `Error! no data`,
-            status: "error",
-            duration: 9000,
-            isClosable: true,
-        })
-
         return (
             <>
             </>

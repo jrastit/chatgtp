@@ -71,10 +71,12 @@ export class IWallet {
 }
 
 export class IContext {
-    constructor(blockchainList: IBlockchain[]){
+    constructor(blockchainList: IBlockchain[], otherWalletAddress?: string | undefined){
         this.blockchainList = blockchainList;
+        this.otherWalletAddress = otherWalletAddress
     }
     blockchainList : IBlockchain[] = [];
+    otherWalletAddress: string | undefined;
     getBlockchain(chainId: number): IBlockchain {
         const blockchain = this.blockchainList.find((blockchain) => blockchain.chainId === chainId);
         if (!blockchain) {
