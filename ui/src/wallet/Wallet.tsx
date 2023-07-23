@@ -90,7 +90,7 @@ function Wallet({context}: WalletProps) {
                     .flatMap(({b, c}) => b.walletList.map((w) => ({b, c, w})))
                     .map(async ({b, w}) => {
                         const bal = (await getGoldBalance(w.address, context, b.chainId)).toString();
-                        return [w.address, [bal, b.name]];
+                        return [w.address, bal];
                     }));
             console.log('setWalletBalances................... ', result);
             setWalletBalances(Object.fromEntries(result));
@@ -121,10 +121,9 @@ function Wallet({context}: WalletProps) {
     const edges = [];
     const circleRadius = 250;
     const e = Math.floor(Math.max(data?.EthereumBalances?.TokenBalance?.length ?? 0, data?.PolygonBalances?.TokenBalance?.length ?? 0) / Math.floor((2 * Math.PI * circleRadius) / (150 + 10)));
-    let id_eth=0
-    let id_poly=0
+
     if (data?.EthereumBalances) {
-        id_eth = nodes.length;
+        const id_eth = nodes.length;
         const blockchainNodeX = -(150 + e * 150);
         const blockchainNodeY = (150 + e * 150);
         nodes.push({
@@ -170,7 +169,7 @@ function Wallet({context}: WalletProps) {
         }
     }
     if (data?.PolygonBalances) {
-        id_poly = nodes.length;
+        const id_poly = nodes.length;
         const blockchainNodeX = 150 + e * 100;
         const blockchainNodeY = 150 + e * 100;
         nodes.push({
@@ -218,38 +217,13 @@ function Wallet({context}: WalletProps) {
     }
 
     for (let a of allAddresses) {
-        const bal = walletBalances[a][0];
-        const id_blockchain:any = (walletBalances[a][1]==="Ethereum" && id_eth!==0) ? id_eth : (walletBalances[a][1]==="Polygon" && id_poly!==0) ?  id_poly : nodes.length;
-        
-        if (id_blockchain !==id_eth && id_blockchain !==id_poly) {
-            const blockchainNodeX:any = 150 + e * (100+nodes.length);
-            const blockchainNodeY:any = 150 + e * (100+nodes.length);
-            nodes.push({
-                id: `${id_blockchain}`,
-                type: "nodeBlockChain",
-                data: {label: "Polygon", type: "blockchain", img: ''},
-                position: {x: blockchainNodeX, y: blockchainNodeY},
-            })
-            edges.push({
-                id: `0-${id_blockchain}`,
-                source: '0',
-                target: `${id_blockchain}`,
-                type: 'straight',
-                style: {stroke: 'blue', strokeWidth: 2}
-            })
-        }
-        
+        const bal = walletBalances[a];
+        console.log('balances ', walletBalances, ' ', a)
         nodes.push({
             id: `${nodes.length}`,
             type: 'nodeNft',
             data: {label: `${bal} GOLD`, type: "wallet", img: ''},
             position: {x: nodes.length, y: nodes.length},
-        });
-        edges.push({
-            id: `${id_blockchain}-${nodes.length - 1}`,
-            source: `${id_blockchain}`,
-            target: `${nodes.length - 1}`,
-            type: 'straight'
         })
 
     }
