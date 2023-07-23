@@ -20,9 +20,12 @@ const startMetamask = async () => {
 
 
 const Metamask: React.FC<Props> = ({context, chainId, setContext}) => {
+
+    if (chainId == -1) setContext(context)
+
     return (
         <div>
-            <Button onClick={startMetamask}>Start Metamask</Button>
+            <Button onClick={() => startMetamask()}>Start Metamask</Button>
         </div>
     )
 }

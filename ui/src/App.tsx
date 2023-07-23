@@ -112,7 +112,6 @@ const App: FunctionComponent = () => {
                         bottom="10px"
                         right="0"
                         width="fit-content"
-                        paddingLeft="30px"
                         border="1px"
                         borderColor="black"
                     >

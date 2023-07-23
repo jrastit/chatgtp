@@ -30,7 +30,7 @@ const ActionWidget: FunctionComponent<ActionWidgetProps> = ({payload, setContext
                 return (
                     <>
                         <Biconomy context={getContext()} setContext={setContext} chainId={5}/>
-                        <SafeWidget/>
+                        <SafeWidget context={getContext()} setContext={setContext} chainId={5}/>
                     </>
                 );
             default:
