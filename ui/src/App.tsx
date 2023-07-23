@@ -8,6 +8,7 @@ import Biconomy from "./biconomy/Biconomy";
 import SafeWidget from "./safe/SafeWidget";
 import {ChatIcon} from "@chakra-ui/icons"
 import Metamask from "./metamask/Metamask";
+import ContextWidget from "./type/ContextWidget";
 
 // const nodeDefaults = {
 //     // sourceposition: Position.Right,  
@@ -55,6 +56,7 @@ import Metamask from "./metamask/Metamask";
 // ]
 
 const App: FunctionComponent = () => {
+    const [debug, setDebug] = useState(false);
     const {isOpen, onOpen, onClose} = useDisclosure();
     const [context, setContext0] = useState<IContext>(new IContext([
         new IBlockchain(1, "Ethereum"),
@@ -82,10 +84,14 @@ const App: FunctionComponent = () => {
 
     return (
         <ChakraProvider>
+            <button onClick={() => {setDebug(!debug)} }>debug</button>
             <Box display="flex" justifyContent="space-around" alignContent="center" pt="2px">
+                {debug && 
+                <>
                 <Biconomy context={context} chainId={5} setContext={setContext}></Biconomy>
                 <SafeWidget context={context} chainId={5} setContext={setContext}/>
                 <Metamask  context={context} chainId={5} setContext={setContext}/>
+                </>}
                 <Button colorScheme='blue' width="fit-content" onClick={isOpen ? onClose : onOpen}
                         leftIcon={<ChatIcon/>}>{!isOpen ? "Close Chatbot" : "Open Chatbot"}</Button>
 
@@ -93,6 +99,11 @@ const App: FunctionComponent = () => {
             <Stack pt="2rem">
                 {/* <GraphFlow initialEdges={edges} initialNodes={nodes} /> */}
                 <Stack spacing={4}>
+                {debug && 
+                <>
+                    <ContextWidget context={context} chainId={5} setContext={setContext}/>
+                    </>
+                }
 
                     <Wallet context={context}/>
 

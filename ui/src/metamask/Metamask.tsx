@@ -1,11 +1,5 @@
 import { MetaMaskSDK } from '@metamask/sdk';
 import {Button} from "react-bootstrap"
-import {web3AuthModalPack} from "./safe"
-import {useState} from "react";
-import {ethers} from 'ethers'
-import {EthersAdapter, SafeAccountConfig, SafeFactory} from '@safe-global/protocol-kit'
-import AccountAbstraction from '@safe-global/account-abstraction-kit-poc'
-import {GelatoRelayPack} from '@safe-global/relay-kit'
 import { IContext, IWallet } from "../type/blockchain";
 
 interface Props {
