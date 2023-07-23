@@ -113,6 +113,8 @@ const App: FunctionComponent = () => {
                         right="0"
                         width="fit-content"
                         paddingLeft="30px"
+                        border="1px"
+                        borderColor="black"
                     >
                         {!isOpen && <MyChatbot setContext={setContext} getContext={() => context}/>}
                     </Box>
