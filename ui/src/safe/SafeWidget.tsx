@@ -5,16 +5,24 @@ import {ethers} from 'ethers'
 import {EthersAdapter, SafeAccountConfig, SafeFactory} from '@safe-global/protocol-kit'
 import AccountAbstraction from '@safe-global/account-abstraction-kit-poc'
 import {GelatoRelayPack} from '@safe-global/relay-kit'
+import { IContext, IWallet } from "../type/blockchain";
 
+interface Props {
+    context: IContext
+    chainId: number
+    setContext: (context: IContext) => void
+}
 
-const SafeWidget = () => {
+const SafeWidget: React.FC<Props> = (
+    {context, chainId, setContext}) => {
+    chainId = 5 // goerli override
     const [authKitSignData, setAuthKitSignData] = useState<any>(null)
     const [signer, setSigner] = useState<any>(null)
     const [safeSelected, setSafeSelected] = useState<string | null>(null)
 
     const openSafe = async () => {
         const authKitSignData = await web3AuthModalPack.signIn()
-        setAuthKitSignData(authKitSignData)
+        
         if (authKitSignData.safes && authKitSignData.safes.length === 0) {
             const safes = authKitSignData.safes
 
@@ -25,8 +33,6 @@ const SafeWidget = () => {
 
                 const signer = web3Provider.getSigner()
 
-                setSigner(signer)
-
                 const relayPack = new GelatoRelayPack()
                 const safeAccountAbstraction = new AccountAbstraction(signer)
 
@@ -36,11 +42,23 @@ const SafeWidget = () => {
 
                 const safeSelected = hasSafes ? safes[0] : await safeAccountAbstraction.getSafeAddress()
 
+                setAuthKitSignData(authKitSignData)
                 setSafeSelected(safeSelected)
+                setSigner(signer)
 
+                context.getBlockchain(chainId).walletList.push(new IWallet(await signer.getAddress(), "Safe", {
+                    provider: web3Provider,
+                    signer: signer,
 
+                }))
+                setContext(context)
+
+            } else {
+                console.log('no provider')
             }
 
+        } else {
+            console.log('no safes')
         }
     }
 
@@ -85,12 +103,20 @@ const SafeWidget = () => {
         await web3AuthModalPack.signOut()
         setAuthKitSignData(null)
         setSafeSelected(null)
+        const wallet = context.getBlockchain(chainId).getWalletByType("Safe")
+        context.getBlockchain(chainId).walletList = context.getBlockchain(chainId).walletList.filter((w) => w.address !== wallet?.address)
     }
 
     return (
         <div>
             {!authKitSignData &&
-                <Button onClick={() => openSafe()}>Login with Safe</Button>
+                <div><Button onClick={() => openSafe()}>Login with Safe</Button></div>
+            }
+            {authKitSignData &&
+                <div><Button onClick={() => createSafe()}>createSafe</Button></div>
+            }
+            {authKitSignData &&
+                <div><Button onClick={() => closeSafe()}>closeSafe</Button></div>
             }
         </div>
     );

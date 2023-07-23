@@ -7,6 +7,7 @@ import {IBlockchain, IContext, IContract} from "./type/blockchain";
 import Biconomy from "./biconomy/Biconomy";
 import SafeWidget from "./safe/SafeWidget";
 import {ChatIcon} from "@chakra-ui/icons"
+import Metamask from "./metamask/Metamask";
 
 // const nodeDefaults = {
 //     // sourceposition: Position.Right,  
@@ -83,10 +84,10 @@ const App: FunctionComponent = () => {
         <ChakraProvider>
             <Box display="flex" justifyContent="space-around" alignContent="center" pt="2px">
                 <Biconomy context={context} chainId={5} setContext={setContext}></Biconomy>
-                <SafeWidget/>
+                <SafeWidget context={context} chainId={5} setContext={setContext}/>
+                <Metamask  context={context} chainId={5} setContext={setContext}/>
                 <Button colorScheme='blue' width="fit-content" onClick={isOpen ? onClose : onOpen}
                         leftIcon={<ChatIcon/>}>{!isOpen ? "Close Chatbot" : "Open Chatbot"}</Button>
-
 
             </Box>
             <Stack pt="2rem">
