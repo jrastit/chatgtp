@@ -79,6 +79,7 @@ const ActionProvider: FunctionComponent<ActionProviderProps> = ({
                             ...prev,
                             messages: [...prev.messages, callbackMessage],
                         }));
+                        await new Promise(resolve => setTimeout(resolve, 3000));
                         setContext(getContext());
                     })();
                 }
@@ -93,6 +94,11 @@ const ActionProvider: FunctionComponent<ActionProviderProps> = ({
                         args,
                         action: async () => {
                             try {
+                                const waitMessage = createChatBotMessage(`Transfer is in progress...`, {delay: 0});
+                                setState((prev) => ({
+                                    ...prev,
+                                    messages: [...prev.messages, waitMessage],
+                                }));
                                 await transfer_gold(args.amount, args.address, null, getContext(), 5);
                                 const callbackMessage = createChatBotMessage(`${args.amount} ${args.token} have been transferred to ${args.address}`, {delay: 0});
                                 setState((prev) => ({
@@ -106,6 +112,8 @@ const ActionProvider: FunctionComponent<ActionProviderProps> = ({
                                     messages: [...prev.messages, callbackMessage],
                                 }));
                             }
+                            await new Promise(resolve => setTimeout(resolve, 3000));
+                            setContext(getContext());
                         },
                     };
                 }
