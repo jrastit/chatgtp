@@ -4,9 +4,10 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "start": "tsx esbuild.ts && node build/index.mjs",
     "build": "tsx esbuild.ts",
-    "pm2": "pm2 --name blockgtp serve build 4337 -spa" 
+    "server": "node build/index.mjs",
+    "start": "yarn build && yarn server",
+    "pm2": "pm2 --name blockgtp serve build 4337 -spa"
   },
   "dependencies": {
     "body-parser": "1.20.2",

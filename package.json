@@ -6,6 +6,10 @@
     "back",
     "ui"
   ],
+  "scripts": {
+    "build": "yarn workspace ui build && yarn workspace back build",
+    "server": "yarn workspace back server"
+  },
   "packageManager": "yarn@3.6.1",
   "dependencies": {
     "@biconomy/account": "3.0.0-alpha.0",
