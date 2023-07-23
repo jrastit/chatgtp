@@ -61,5 +61,14 @@
         "address"
       ]
     }
+  },
+  {
+    "name": "showBalance",
+    "description": "Show the wallet balance",
+    "parameters": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
   }
 ]

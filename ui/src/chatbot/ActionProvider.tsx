@@ -2,6 +2,7 @@ import React, {cloneElement, FunctionComponent, ReactElement, useRef} from 'reac
 import {IMessageOptions} from "react-chatbot-kit/src/interfaces/IMessages";
 import {mint_gold, transfer_gold} from "../action/action";
 import {IContext} from "../type/blockchain";
+import {getGoldBalance} from "../action/view";
 
 interface StateItem {
     [key: string]: any,
@@ -113,6 +114,23 @@ const ActionProvider: FunctionComponent<ActionProviderProps> = ({
                 const context = getContext();
                 context.otherWalletAddress = args.address;
                 setContext(context);
+            } else if (answer.function_call.name === 'showBalance') {
+                const allWallets = getContext().blockchainList.flatMap((b) => b.walletList);
+                const allAddresses = allWallets.map((w) => w.address);
+                const ownerFromContext = allAddresses[0];
+                if (ownerFromContext) {
+                    const bal = (await getGoldBalance(ownerFromContext, getContext(), 5)).toString();
+                    chatBotMessage.message = `Your balance is ${bal} GOLD`;
+                    if (Number(bal) > 1000000) {
+                        const callbackMessage = createChatBotMessage(`You are rich 💸`, {});
+                        setState((prev) => ({
+                            ...prev,
+                            messages: [...prev.messages, callbackMessage],
+                        }));
+                    }
+                } else {
+                    chatBotMessage.message = 'You need to connect your wallet first';
+                }
             }
         } else {
             chatBotMessage.message = answer.content;
