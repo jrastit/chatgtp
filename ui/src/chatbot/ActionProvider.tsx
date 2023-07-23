@@ -108,6 +108,11 @@ const ActionProvider: FunctionComponent<ActionProviderProps> = ({
                         },
                     };
                 }
+            } else if (answer.function_call.name === 'showWallet') {
+                chatBotMessage.message = 'Here is your wallet';
+                const context = getContext();
+                context.otherWalletAddress = args.address;
+                setContext(context);
             }
         } else {
             chatBotMessage.message = answer.content;

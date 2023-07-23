@@ -75,7 +75,7 @@ const App: FunctionComponent = () => {
     ]))
 
     const setContext = (context: IContext) => {
-        const newContext = new IContext(context.blockchainList);
+        const newContext = new IContext(context.blockchainList, context.otherWalletAddress);
         return setContext0(newContext);
     };
 
