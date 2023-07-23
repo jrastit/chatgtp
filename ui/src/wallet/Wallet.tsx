@@ -238,7 +238,7 @@ function Wallet({context}: WalletProps) {
                 style: {stroke: 'blue', strokeWidth: 2}
             })
         }
-        console.log("id",id_blockchain)
+        
         nodes.push({
             id: `${nodes.length}`,
             type: 'nodeNft',
